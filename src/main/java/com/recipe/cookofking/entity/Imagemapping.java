@@ -2,8 +2,8 @@ package com.recipe.cookofking.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.Instant;
+import org.springframework.data.annotation.CreatedDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -14,6 +14,7 @@ import java.time.Instant;
 public class Imagemapping {
     @Id
     @Column(name = "image_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -24,6 +25,7 @@ public class Imagemapping {
     private String s3Url;
 
     @Column(name = "createdDate")
-    private Instant createdDate;
+    @CreatedDate
+    private LocalDateTime createdDate;
 
 }

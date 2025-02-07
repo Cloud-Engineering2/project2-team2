@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link User}
@@ -18,7 +18,7 @@ public class UserDto implements Serializable {
     String email;
     String password;
     String role;
-    Instant createdDate;
-    Instant modifiedDate;
+    LocalDateTime createdDate;
+    LocalDateTime modifiedDate;
 
 }

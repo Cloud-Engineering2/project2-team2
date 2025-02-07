@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link Imagemapping}
@@ -16,5 +16,5 @@ public class ImagemappingDto implements Serializable {
     Integer id;
     PostDto post;
     String s3Url;
-    Instant createdDate;
+    LocalDateTime createdDate;
 }

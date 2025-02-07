@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link Post}
@@ -19,6 +19,6 @@ public class PostDto implements Serializable {
     String content;
     String ingredients;
     String instructions;
-    Instant createdDate;
-    Instant modifiedDate;
+    LocalDateTime createdDate;
+    LocalDateTime modifiedDate;
 }
