@@ -233,6 +233,9 @@ Temporary Items
 .history
 .ionide
 
+## application properties ignore
+application.properties
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
