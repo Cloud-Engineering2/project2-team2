@@ -1,13 +1,14 @@
 package com.recipe.cookofking.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -19,6 +20,7 @@ import java.time.Instant;
 public class User {
     @Id
     @Column(name = "user_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "username", nullable = false, length = 50)
@@ -35,10 +37,11 @@ public class User {
     private String role;
 
     @Column(name = "createdDate")
-    private Instant createdDate;
+    @CreatedDate
+    private LocalDateTime createdDate;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "modifiedDate")
-    private Instant modifiedDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
 
 }

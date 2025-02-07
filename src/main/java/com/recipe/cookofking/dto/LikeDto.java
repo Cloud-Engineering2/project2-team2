@@ -6,6 +6,7 @@ import lombok.Value;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link Like}
@@ -16,5 +17,5 @@ public class LikeDto implements Serializable {
     Integer id;
     PostDto post;
     UserDto user;
-    Instant createdDate;
+    LocalDateTime createdDate;
 }
