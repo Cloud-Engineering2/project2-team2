@@ -1,5 +1,6 @@
 package com.recipe.cookofking.dto;
 
+import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.entity.Like;
 import lombok.Builder;
 import lombok.Value;

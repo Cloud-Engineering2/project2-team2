@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 import java.time.LocalDateTime;
@@ -14,14 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "post")
+@EntityListeners(AuditingEntityListener.class)  // 자동으로 생성일자 저장
 public class Post {
     @Id
     @Column(name = "post_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @Column(name = "title", nullable = false, length = 100)
@@ -36,8 +38,12 @@ public class Post {
     private String ingredients;
 
     @Lob
-    @Column(name = "instructions")
+    @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
+
+    @Lob
+    @Column(name = "mainImageS3URL")
+    private String mainImageS3URL;
 
     @Column(name = "createdDate")
     @CreatedDate
