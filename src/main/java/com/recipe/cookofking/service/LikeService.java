@@ -1,6 +1,9 @@
 package com.recipe.cookofking.service;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b767de0 (Second Version for Like)
 import com.recipe.cookofking.entity.Like;
 import com.recipe.cookofking.entity.Post;
 import com.recipe.cookofking.entity.User;
@@ -29,6 +32,7 @@ public class LikeService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
+<<<<<<< HEAD
         Optional<Like> existingLike = likeRepository.findByPost(post);
 
         if (existingLike.isPresent()) {
@@ -44,6 +48,35 @@ public class LikeService {
 
         postRepository.save(post); // ✅ 좋아요 수 저장 (중요!)
         return post.getLikeCount(); // 🚀 변경된 좋아요 수 반환
+=======
+    // 좋아요 추가/취소
+    @Transactional
+    public int toggleLike(Integer postId, Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        Optional<Like> existingLike = likeRepository.findByUserAndPost(user, post);
+
+        if (existingLike.isPresent()) {
+            likeRepository.delete(existingLike.get()); // 이미 좋아요 했으면 취소
+        } else {
+            Like newLike = Like.builder().user(user).post(post).build();
+            likeRepository.save(newLike); // 좋아요 추가
+        }
+
+        return likeRepository.countByPost(post); // 📌 반환 타입 맞추기
+    }
+
+    // 좋아요 조회
+    @Transactional(readOnly = true)
+    public int getLikeCount(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        return likeRepository.countByPost(post); // 📌 Long 변환
+>>>>>>> b767de0 (Second Version for Like)
     }
 
 

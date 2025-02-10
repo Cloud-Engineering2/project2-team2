@@ -34,7 +34,6 @@ public class PostController {
         return "Post/post-write";
     }
 
-
     // 레시피 조회 폼
     @RequestMapping("/view/{postid}")
     public String showViewForm(@PathVariable(name = "postid") Integer postid, Model model) {

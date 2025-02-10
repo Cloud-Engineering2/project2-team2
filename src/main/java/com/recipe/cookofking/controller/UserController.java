@@ -31,9 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 	
 	private final UserService userService;
-	
-	
-	
+
 	/* 로그인 페이지 */
 	@GetMapping("/login")
 	public String login( ) {
