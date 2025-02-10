@@ -45,6 +45,12 @@ public class Post {
     @Column(name = "mainImageS3URL")
     private String mainImageS3URL;
 
+    @Column(name = "view_count", nullable = false)
+    private Integer viewCount = 0;
+
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount = 0;
+
     @Column(name = "createdDate")
     @CreatedDate
     private LocalDateTime createdDate;
@@ -53,4 +59,23 @@ public class Post {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
+    // 조회수 감소 메서드
+    public void decrementViewCount() {
+        this.viewCount -= 1;
+    }
+
+    // 조회수 증가 메서드
+    public void incrementViewCount() {
+        this.viewCount += 1;
+    }
+
+    // 좋아요 수 감소 메서드 (필요 시)
+    public void decrementLikeCount() {
+        this.likeCount -= 1;
+    }
+
+    // 좋아요 수 증가 메서드 (필요 시)
+    public void incrementLikeCount() {
+        this.likeCount += 1;
+    }
 }
