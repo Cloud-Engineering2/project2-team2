@@ -201,7 +201,7 @@
                         )}"
                         th:classappend="${postPage.number == pageNum} ? 'active'">
                         <a class="page-link"
-                           th:href="@{'/post/list?page=' + ${pageNum} + '&sort=' + ${currentSort}}"
+                           th:href="@{'/post/list?page=' + ${pageNum + 1} + '&sort=' + ${currentSort}}"
                            th:text="${pageNum + 1}">
                         </a>
                     </li>
