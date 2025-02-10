@@ -45,9 +45,11 @@ public class Post {
     @Column(name = "mainImageS3URL")
     private String mainImageS3URL;
 
+    @Builder.Default
     @Column(name = "view_count", nullable = false)
     private Integer viewCount = 0;
 
+    @Builder.Default
     @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;
 

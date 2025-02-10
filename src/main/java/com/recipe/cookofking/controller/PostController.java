@@ -1,6 +1,8 @@
 package com.recipe.cookofking.controller;
 
 import com.recipe.cookofking.dto.post.PostDto;
+import com.recipe.cookofking.dto.post.PostViewDto;
+import com.recipe.cookofking.entity.Post;
 import com.recipe.cookofking.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,31 +38,43 @@ public class PostController {
     // 레시피 조회 폼
     @RequestMapping("/view/{postid}")
     public String showViewForm(@PathVariable Integer postid, Model model) {
-        PostDto postDto = postService.getPostById(postid);  // postid로 게시글 데이터 가져오기
-        model.addAttribute("post", postDto);  // 모델에 데이터 추가
-        return "Post/post-view";  // post-view.html 렌더링
+        PostViewDto postViewDto = postService.getPostById(postid);  // postid로 게시글 데이터 가져오기
+        model.addAttribute("post", postViewDto);  // 모델에 데이터 추가
+        return "post/post-view";  // post-view.html 렌더링
     }
+
+
 
 
     @GetMapping("/list")
     public String getPostList(Model model,
-                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "1") int page,
                               @RequestParam(defaultValue = "20") int size,
                               @RequestParam(defaultValue = "latest") String sort) {
 
+
+
+        // 페이지 번호를 0부터 시작하도록 조정
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+
         // 정렬 기준 설정
         Sort sortOrder = getSortOrder(sort);
-        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+        PageRequest pageRequest = PageRequest.of(adjustedPage, size, sortOrder);
 
         // 서비스 호출
         Page<PostDto> postPage = postService.getPostList(pageRequest);
 
+        List<PostDto> reversedList = new ArrayList<>(postPage.getContent());
+        Collections.reverse(reversedList);
+
+
         // 모델에 데이터 추가
         model.addAttribute("postPage", postPage);
         model.addAttribute("totalPosts", postPage.getTotalElements());
-        model.addAttribute("currentSort", sort);  // 현재 정렬 기준을 모델에 추가 (버튼 하이라이트용)
+        model.addAttribute("currentSort", sort);
+        model.addAttribute("currentPage", page);  // 현재 페이지를 모델에 추가 (1부터 시작)
 
-        return "Post/posts";  // posts.html로 렌더링
+        return "post/posts";  // posts.html로 렌더링
     }
 
     // 정렬 기준에 따라 Sort 객체 반환
