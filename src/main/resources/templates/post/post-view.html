@@ -79,8 +79,12 @@
 
                                 <!-- 작성자 및 조회수 -->
                                 <div class="d-flex justify-content-between text-muted small mb-3">
-                                    <span class="author">작성자: <span>작성자 이름</span></span>
-                                    <span class="views">조회수: <span>3740</span></span>
+                                    <span class="author">작성자:
+                                        <span th:text="${post.username != null and post.username != null ? post.username : '탈퇴한 회원'}">
+                                            작성자 이름
+                                        </span>
+                                    </span>
+                                    <span class="views">조회수: <span th:text="${post.viewCount}">0</span></span>
                                 </div>
 
                                 <!-- 좋아요 버튼 -->
@@ -91,7 +95,7 @@
 
                                     <!-- 좋아요 수 표시 -->
                                     <p class="mt-2 mb-0 text-muted small">
-                                        좋아요 수: <span id="like-count">0</span>
+                                        좋아요 수: <span id="like-count" th:text="${post.likeCount}">0</span>
                                     </p>
                                 </div>
 
@@ -168,18 +172,22 @@
 
         // 조리 순서 렌더링
         instructions.forEach((step, index) => {
+            // 이미지가 있는 경우와 없는 경우를 구분하여 처리
+            const imageSection = step.imageUrl
+                ? `<div class="col-md-4 text-center">
+                <img src="${step.imageUrl}" alt="Step Image" class="img-fluid rounded square-image">
+           </div>`
+                : '';
+
             $('#instruction-list').append(`
         <div class="row mb-4">
             <!-- 텍스트 부분 -->
-            <div class="col-md-8">
+            <div class="${step.imageUrl ? 'col-md-8' : 'col-md-12'}">
                 <h5 class="fw-bold">Step ${index + 1}</h5>
                 <p>${step.description}</p>
             </div>
 
-            <!-- 이미지 부분 -->
-            <div class="col-md-4 text-center">
-                <img src="${step.imageUrl}" alt="Step Image" class="img-fluid rounded square-image">
-            </div>
+            ${imageSection}
         </div>
     `);
         });
