@@ -1,8 +1,7 @@
 package com.recipe.cookofking.dto;
 
 import com.recipe.cookofking.entity.User;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,8 +9,10 @@ import java.time.LocalDateTime;
 /**
  * DTO for {@link User}
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Value
 public class UserDto implements Serializable {
     Integer id;
     String username;
