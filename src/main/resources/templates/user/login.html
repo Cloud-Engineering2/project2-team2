@@ -38,7 +38,8 @@
 
 
     <script>
-    
+
+
         // 폼 제출 이벤트 처리
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault(); // 기본 폼 제출 동작을 막음
@@ -73,11 +74,10 @@
                     return response.json().then(data => ({ data, token }));
                 })
                 .then(({ data, token }) => {
-                    console.log('응답 데이터:', data);
-                    console.log('추출한 토큰:', token);
 
                     if (data.message === "로그인 성공!" && token) {
-                        localStorage.setItem('token', token);  // 토큰 저장
+                        document.cookie = `token=${token}; path=/; SameSite=Strict`;
+
                         window.location.href = '/';  // 리다이렉트
                     } else {
                         alert('로그인 실패: 토큰이 없습니다.');

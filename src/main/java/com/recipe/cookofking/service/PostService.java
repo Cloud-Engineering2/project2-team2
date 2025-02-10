@@ -9,8 +9,11 @@ import com.recipe.cookofking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +44,29 @@ public class PostService {
         return savedPost.getId();
     }
 
+    @Transactional(readOnly = true)
+    public boolean isUserOwnerOfPost(Integer postId, Integer userId) {
+        return postRepository.findById(postId)
+                .map(post -> post.getUser().getId().equals(userId))
+                .orElse(false);  // 게시글이 존재하지 않으면 false 반환
+    }
+
+
+
+    @Transactional
+    public Integer updatePost(PostDto postDto) {
+        // 기존 게시글 조회
+        Post existingPost = postRepository.findById(postDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. ID: " + postDto.getId()));
+
+        // 정적 팩토리 메서드로 새로운 엔티티 생성
+        Post updatedPost = existingPost.updateFromDto(postDto);
+
+        // 수정된 엔티티 저장
+        postRepository.save(updatedPost);
+
+        return updatedPost.getId();
+    }
 
 
     @Transactional
@@ -73,5 +99,27 @@ public class PostService {
     public Page<PostDto> getPostList(Pageable pageable) {
         return postRepository.findAll(pageable).map(PostMapper::toDto);
     }
+
+
+    public void validatePostOwner(Integer postId, String currentUsername) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+
+        // 1. 로그인 여부 확인
+        if (currentUsername == null || currentUsername.isEmpty()) {
+            throw new AccessDeniedException("로그인 후 수정 가능합니다.");
+        }
+
+        // 2. 탈퇴한 회원 여부 확인 (post.getUser()가 null인 경우)
+        if (post.getUser() == null) {
+            throw new AccessDeniedException("탈퇴한 회원의 게시글은 수정할 수 없습니다.");
+        }
+
+        // 3. 게시글 소유자 확인
+        if (!post.getUser().getUsername().equals(currentUsername)) {
+            throw new AccessDeniedException("해당 게시글에 대한 수정 권한이 없습니다.");
+        }
+    }
+
 
 }

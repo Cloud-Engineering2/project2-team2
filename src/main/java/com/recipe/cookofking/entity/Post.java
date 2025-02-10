@@ -1,5 +1,6 @@
 package com.recipe.cookofking.entity;
 
+import com.recipe.cookofking.dto.post.PostDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -79,5 +80,20 @@ public class Post {
     // 좋아요 수 증가 메서드 (필요 시)
     public void incrementLikeCount() {
         this.likeCount += 1;
+    }
+
+    public Post updateFromDto(PostDto postDto) {
+        return Post.builder()
+                .id(this.id)  // 기존 ID 유지
+                .user(this.user)  // 기존 작성자 유지
+                .title(postDto.getTitle())
+                .content(postDto.getContent())
+                .ingredients(postDto.getIngredients())
+                .instructions(postDto.getInstructions())
+                .mainImageS3URL(postDto.getMainImageS3URL())
+                .viewCount(this.viewCount)  // 조회수 유지
+                .likeCount(this.likeCount)  // 좋아요 수 유지
+                .createdDate(this.createdDate)  // 생성일 유지
+                .build();
     }
 }
