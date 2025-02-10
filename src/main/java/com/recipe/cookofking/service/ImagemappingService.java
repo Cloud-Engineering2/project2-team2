@@ -40,7 +40,8 @@ public class ImagemappingService {
         s3Client.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
         // 업로드된 파일의 S3 URL 생성
-        String s3Url = "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+        String region = s3Client.serviceClientConfiguration().region().id();
+        String s3Url = "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
 
         // DB에 이미지 정보 저장
         Imagemapping imagemapping = Imagemapping.builder()

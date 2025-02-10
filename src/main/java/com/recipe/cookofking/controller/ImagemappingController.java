@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/upload-image")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class ImagemappingController {
 
     private final ImagemappingService imagemappingService;
 
     @PostMapping
+    @RequestMapping("/upload-image")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             ImagemappingDto uploadedImage = imagemappingService.uploadImage(file);
