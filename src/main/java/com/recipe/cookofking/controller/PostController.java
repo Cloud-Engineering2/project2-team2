@@ -30,5 +30,4 @@ public class PostController {
         model.addAttribute("post", postDto);  // 모델에 데이터 추가
         return "Post/post-view";  // post-view.html 렌더링
     }
-
 }
