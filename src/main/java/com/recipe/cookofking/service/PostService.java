@@ -1,14 +1,17 @@
 package com.recipe.cookofking.service;
+
 import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.entity.Post;
 import com.recipe.cookofking.mapper.PostMapper;
 import com.recipe.cookofking.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -35,10 +38,16 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(PostDto postDto) {
-        Post post = postRepository.findById(postDto.getId()).orElse(null);
+    public void updatePost(PostDto postDto, Integer postId) {
+        Post post = postRepository.findById(postId).orElse(null);
         if (post != null) {
-            post = PostMapper.toEntity(postDto);
+            post.updatePost(
+                    postDto.getTitle(),
+                    postDto.getContent(),
+                    postDto.getIngredients(),
+                    postDto.getInstructions(),
+                    postDto.getMainImageS3URL()
+            );
         }
     }
 }

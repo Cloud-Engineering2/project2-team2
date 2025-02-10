@@ -53,4 +53,11 @@ public class Post {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
+    public void updatePost(String title, String content, String ingredients, String instructions, String mainImageS3URL) {
+        this.title = title;
+        this.content = content;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
+        this.mainImageS3URL = mainImageS3URL;
+    }
 }

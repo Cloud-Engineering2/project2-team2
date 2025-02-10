@@ -71,6 +71,7 @@
                     <h4 class="card-title text-left mb-4">레시피 등록</h4>
 
                     <form id="recipeForm" th:method="${post != null}? put : post">
+                        <input type="hidden" th:if="${post != null}" name="id" th:value="${post.id}">
                         <!-- 레시피 제목 -->
                         <div class="form-group mb-4">
                             <label for="recipeTitle">레시피 제목</label>
@@ -165,6 +166,8 @@
 </div>
 
 <script>
+    const method = $('input[name=_method]').val()?.toUpperCase();
+
     // 메인 이미지 업로드
     $(document).on('change', '.recipe-image', function () {
         const file = this.files[0];
@@ -242,17 +245,31 @@
             validationData: validationData
         };
 
-        // JSON 데이터 전송
-        $.ajax({
-            url: '/api/submit-recipe',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(finalData),
-            success: function (response) {
-                alert(response);
-                window.location.href = '/recipes';  // 저장 후 리다이렉션
-            }
-        });
+        if (method === "PUT") {
+            const postId = $('input[name=id]').val();
+            $.ajax({
+                url: `/api/v1/update-recipe/${postId}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(finalData),
+                success: function (response) {
+                    alert(response);
+                    window.location.href = '/recipes';  // 저장 후 리다이렉션
+                }
+            });
+        } else {
+            // JSON 데이터 전송
+            $.ajax({
+                url: '/api/submit-recipe',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(finalData),
+                success: function (response) {
+                    alert(response);
+                    window.location.href = '/recipes';  // 저장 후 리다이렉션
+                }
+            });
+        }
     });
 
     // 재료 정보 수집 함수
@@ -295,8 +312,6 @@
     // 재료 추가 및 삭제 기능
     $(document).ready(function () {
         // 레시피 수정: 재료 및 과정 파싱
-        let method = $('input[name=_method]').val().toUpperCase();
-        console.log(method);
         if (method === "PUT") {
             // 숨겨진 div에서 JSON 데이터 가져오기
             const ingredientsJson = $("#ingredients-json").text();
@@ -394,11 +409,8 @@
             </div>`;
             $('#step-container').append(newStep);
         });
-
-
     });
 
-    // 수정 기능을 위한 함수
 
 </script>
 

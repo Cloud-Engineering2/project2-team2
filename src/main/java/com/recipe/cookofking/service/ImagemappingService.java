@@ -8,6 +8,7 @@ import com.recipe.cookofking.repository.ImagemappingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -54,6 +55,7 @@ public class ImagemappingService {
         return ImagemappingMapper.toDto(savedImage);
     }
 
+    @Transactional
     public void validateAndMarkPermanent(ImageValidationDto validationDto) {
         // 메인 이미지 검증
         imagemappingRepository.findByIdAndS3Url(validationDto.getMainImageId(), validationDto.getMainImageUrl())
@@ -69,6 +71,28 @@ public class ImagemappingService {
                         image.markAsPermanent();
                         imagemappingRepository.save(image);
                     });
+        });
+    }
+
+    @Transactional
+    public void validateForUpdate(ImageValidationDto validationDto) {
+        // 메인 이미지 검증
+        if (validationDto.getMainImageId() != null) {
+            imagemappingRepository.findByIdAndS3Url(validationDto.getMainImageId(), validationDto.getMainImageUrl())
+                    .ifPresent(image -> {
+                        image.markAsPermanent();
+                        imagemappingRepository.save(image);
+                    });
+        }
+        // 조리 순서 이미지 검증
+        validationDto.getStepImages().forEach(stepImage -> {
+            if (stepImage.getImageId() != null) {
+                imagemappingRepository.findByIdAndS3Url(stepImage.getImageId(), stepImage.getImageUrl())
+                        .ifPresent(image -> {
+                            image.markAsPermanent();
+                            imagemappingRepository.save(image);
+                        });
+            }
         });
     }
 
