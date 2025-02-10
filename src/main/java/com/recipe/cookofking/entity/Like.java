@@ -31,6 +31,4 @@ public class Like {
     @Column(name = "createdDate")
     @CreatedDate
     private LocalDateTime createdDate;
-
-
 }
