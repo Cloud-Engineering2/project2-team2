@@ -43,5 +43,15 @@ public class User {
     @Column(name = "modifiedDate")
     @LastModifiedDate
     private LocalDateTime modifiedDate;
+    
+    // User 엔티티 생성
+    public User(String username, String email, String password, String role, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
+    }
 
 }

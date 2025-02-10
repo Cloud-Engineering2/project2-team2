@@ -11,12 +11,10 @@
             display: flex;
             align-items: flex-start;
         }
-
         .image-upload .form-control, .image-upload textarea {
             flex: 3;
             height: 100%;
         }
-
         .image-upload .upload-btn {
             flex: 1;
             display: flex;
@@ -30,17 +28,14 @@
             margin-left: 15px;
             position: relative;
         }
-
         .image-upload .upload-btn img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .image-upload .upload-btn input[type='file'] {
             display: none;
         }
-
         .image-upload .upload-btn::before {
             content: '+';
             font-size: 2rem;
@@ -52,7 +47,6 @@
             width: 100%;
             height: 100%;
         }
-
         .image-upload .upload-btn img + ::before {
             display: none;
         }
@@ -178,7 +172,7 @@
             formData.append('file', file);
 
             $.ajax({
-                url: '/upload-image',
+                url: '/api/v1/upload-image',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -204,7 +198,7 @@
             formData.append('file', file);
 
             $.ajax({
-                url: '/upload-image',
+                url: '/api/v1/upload-image',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -270,6 +264,17 @@
                 }
             });
         }
+        // JSON 데이터 전송
+        $.ajax({
+            url: '/api/v1/submit-recipe',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(finalData),
+            success: function (response) {
+                alert(response);
+                window.location.href = '/recipes';  // 저장 후 리다이렉션
+            }
+        });
     });
 
     // 재료 정보 수집 함수
@@ -280,7 +285,7 @@
             const quantity = $(this).find('.ingredient-quantity').val();
             const unit = $(this).find('.ingredient-unit').val();
 
-            ingredients.push({name, quantity, unit});
+            ingredients.push({ name, quantity, unit });
         });
         return ingredients;
     }
@@ -292,7 +297,7 @@
             const description = $(this).find('.step-description').val();
             const imageUrl = $(this).find('.stepImageUrl').val();
 
-            instructions.push({description, imageUrl});
+            instructions.push({ description, imageUrl });
         });
         return instructions;
     }
@@ -304,7 +309,7 @@
             const imageId = $(this).find('.stepImageId').val();
             const imageUrl = $(this).find('.stepImageUrl').val();
 
-            stepImages.push({imageId, imageUrl});
+            stepImages.push({ imageId, imageUrl });
         });
         return stepImages;
     }
@@ -410,8 +415,6 @@
             $('#step-container').append(newStep);
         });
     });
-
-
 </script>
 
 </body>
