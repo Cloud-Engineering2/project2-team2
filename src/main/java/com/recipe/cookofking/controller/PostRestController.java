@@ -25,4 +25,16 @@ public class PostRestController {
 
         return ResponseEntity.ok("레시피가 성공적으로 저장되었습니다!");
     }
+
+    // @TODO
+    @PutMapping("/update-recipe")
+    public ResponseEntity<String> updateRecipe(@RequestBody RecipeSubmissionDto submissionDto) {
+        // 1. 이미지 검증
+        imagemappingService.validateAndMarkPermanent(submissionDto.getValidationData());
+
+        // 2. 레시피 저장
+        postService.updatePost(submissionDto.getRecipeData());
+
+        return ResponseEntity.ok("레시피가 성공적으로 수정되었습니다!");
+    }
 }

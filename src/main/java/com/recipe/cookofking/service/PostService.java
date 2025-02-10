@@ -1,10 +1,13 @@
 package com.recipe.cookofking.service;
 import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.entity.Post;
+import com.recipe.cookofking.mapper.PostMapper;
 import com.recipe.cookofking.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +27,18 @@ public class PostService {
 
         // 2. 레시피 저장
         Post savedPost = postRepository.save(post);
+    }
+
+    public PostDto getPostById(Integer id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new NoSuchElementException("레시피를 찾을 수 없습니다"));
+        return PostMapper.toDto(post);
+    }
+
+    @Transactional
+    public void updatePost(PostDto postDto) {
+        Post post = postRepository.findById(postDto.getId()).orElse(null);
+        if (post != null) {
+            post = PostMapper.toEntity(postDto);
+        }
     }
 }
