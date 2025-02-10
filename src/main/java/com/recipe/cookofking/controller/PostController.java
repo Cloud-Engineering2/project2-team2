@@ -4,11 +4,7 @@ import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.dto.post.PostViewDto;
-import com.recipe.cookofking.entity.Post;
-import com.recipe.cookofking.service.PostService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,15 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
@@ -42,11 +35,11 @@ public class PostController {
 
     @GetMapping("/recipe/{postId}/update")
     public String update(@PathVariable Integer postId, Model model) {
-        PostDto postDto = postService.getPostById(postId);
+        PostDto postDto = postService.getPostDtoById(postId);
         log.debug(postDto.toString());
         model.addAttribute("post", postDto);
 
-        return "Post/post";
+        return "Post/post-write";
     }
 
 

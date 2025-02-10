@@ -33,7 +33,7 @@ public class PostRestController {
     // image id가 있다면 save 로직을 따라 검증 후 is_temp 플래그 해제
     // @TODO 기존에 사용되다가 삭제된 이미지는 어떻게 지울것인가?
     // temp 플래그를 되돌린 후 batch job으로 삭제?
-    @PutMapping("/v1/update-recipe/{postId}")
+    @PutMapping("/update-recipe/{postId}")
     public ResponseEntity<String> updateRecipe(@PathVariable Integer postId, @RequestBody RecipeSubmissionDto submissionDto) {
         // 1. 이미지 검증
         imagemappingService.validateForUpdate(submissionDto.getValidationData());

@@ -33,7 +33,7 @@ public class PostService {
         Post savedPost = postRepository.save(post);
     }
 
-    public PostDto getPostById(Integer id) {
+    public PostDto getPostDtoById(Integer id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new NoSuchElementException("레시피를 찾을 수 없습니다"));
         return PostMapper.toDto(post);
     }
