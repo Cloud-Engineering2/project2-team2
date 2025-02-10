@@ -85,7 +85,7 @@
 
                                 <!-- 좋아요 버튼 -->
                                 <div class="text-center mt-4">
-                                    <button class="btn btn-outline-danger" id="like-button">
+                                    <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}" th:data-user-id="${session.userId}">
                                         ❤️ 좋아요
                                     </button>
 
@@ -132,12 +132,16 @@
 <script>
 
     $(document).ready(function() {
+        let postId = $('#like-button').data('post-id');
+        let userId = $('#like-button').data('user-id');
+        
+        
         $('#like-button').on('click', function() {
             $.ajax({
-                url: '/api/v1/like',  // 실제 API 엔드포인트로 수정하세요
+                url: '/api/v1/likes',  // 실제 API 엔드포인트로 수정하세요
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ postId: 1 }),  // 필요한 데이터 전달 (예: 게시글 ID)
+                data: JSON.stringify({ postId: postID, userId: userId }),  // 필요한 데이터 전달 (예: 게시글 ID)
                 success: function(response) {
                     // 서버로부터 반환된 좋아요 수로 카운트 갱신
                     $('#like-count').text(response.likeCount);
@@ -147,6 +151,11 @@
                 }
             });
         });
+        
+        $.get(`/api/v1/likes/${postId}`, function(response) {
+            $('#like-count').text(response.likeCount);
+        });
+        
     });
 
     $(document).ready(function() {
