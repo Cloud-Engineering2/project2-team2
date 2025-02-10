@@ -157,7 +157,7 @@
             formData.append('file', file);
 
             $.ajax({
-                url: '/upload-image',
+                url: '/api/v1/upload-image',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -183,7 +183,7 @@
             formData.append('file', file);
 
             $.ajax({
-                url: '/upload-image',
+                url: '/api/v1/upload-image',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -226,7 +226,7 @@
 
         // JSON 데이터 전송
         $.ajax({
-            url: '/api/submit-recipe',
+            url: '/api/v1/submit-recipe',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(finalData),

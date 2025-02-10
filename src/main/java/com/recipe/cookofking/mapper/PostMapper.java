@@ -15,6 +15,7 @@ public class PostMapper {
                 .content(post.getContent())
                 .ingredients(post.getIngredients())
                 .instructions(post.getInstructions())
+                .mainImageS3URL(post.getMainImageS3URL())
                 .createdDate(post.getCreatedDate())
                 .modifiedDate(post.getModifiedDate())
                 .build();
@@ -31,6 +32,7 @@ public class PostMapper {
                 .content(postDto.getContent())
                 .ingredients(postDto.getIngredients())
                 .instructions(postDto.getInstructions())
+                .mainImageS3URL(postDto.getMainImageS3URL())
                 .createdDate(postDto.getCreatedDate())
                 .modifiedDate(postDto.getModifiedDate())
                 .build();
