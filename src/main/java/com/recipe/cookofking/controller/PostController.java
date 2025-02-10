@@ -37,13 +37,11 @@ public class PostController {
 
     // 레시피 조회 폼
     @RequestMapping("/view/{postid}")
-    public String showViewForm(@PathVariable Integer postid, Model model) {
+    public String showViewForm(@PathVariable(name = "postid") Integer postid, Model model) {
         PostViewDto postViewDto = postService.getPostById(postid);  // postid로 게시글 데이터 가져오기
         model.addAttribute("post", postViewDto);  // 모델에 데이터 추가
         return "post/post-view";  // post-view.html 렌더링
     }
-
-
 
 
     @GetMapping("/list")
