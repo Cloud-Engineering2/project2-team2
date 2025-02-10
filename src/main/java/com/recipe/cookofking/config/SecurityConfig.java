@@ -1,79 +1,84 @@
 package com.recipe.cookofking.config;
 
 
-//@EnableMethodSecurity(prePostEnabled = true,securedEnabled = true)
-//@EnableWebSecurity
-//@Configuration
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.recipe.cookofking.config.jwt.JwtAuthenticationFilter;
+import com.recipe.cookofking.config.jwt.JwtAuthorizationFilter;
+import com.recipe.cookofking.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
+	private final UserRepository userRepository;
+	
+	@Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class).build();
+  }
+	
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll()  // 모든 요청 허용
+//                )
+//                .csrf(csrf -> csrf.disable())  // CSRF 비활성화 (개발 환경)
+//                .formLogin(form -> form.disable());  // 폼 로그인 비활성화
+//
+//        return http.build();
+//    }
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager ) throws Exception {
+	
+		http
+    	// 로그인 시 JWT 토큰 발급을 위한 필터 추가 (JwtAuthenticationFilter)
+    	.addFilter(new JwtAuthenticationFilter(authenticationManager))
+    	
+    	// 요청 시 JWT 토큰을 검증하는 필터 추가 (JwtAuthorizationFilter)
+    	.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
+    	
+    	.csrf(AbstractHttpConfigurer::disable)
+    	
+    	.sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    	
+    	.formLogin(AbstractHttpConfigurer::disable)
+        .httpBasic(AbstractHttpConfigurer::disable)
+    	
+        // 경로별 권한 설정
+        .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/**","/**", "/login","/register","/js/**", "/css/**", "/images/**", "/static/**").permitAll() // 로그인 경로는 인증 없이 접근 가능
+                //.requestMatchers("/api/mypage").authenticated() // 인증필요시
+                //.requestMatchers("/admin/**").hasRole("ADMIN") // 예시: admin 권한이 필요한 경로
+                .anyRequest().authenticated()); // 다른 모든 요청은 인증 필요
+      
+		return http.build();
+	}
+	
+	
+    
+    
+    
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()  // 모든 요청 허용
-                )
-                .csrf(csrf -> csrf.disable())  // CSRF 비활성화 (개발 환경)
-                .formLogin(form -> form.disable());  // 폼 로그인 비활성화
-
-        return http.build();
+    public PasswordEncoder passwordEncoder() {
+        // BCryptPasswordEncoder를 사용해 비밀번호 암호화
+        return new BCryptPasswordEncoder();
     }
+    
 }
-//
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
-//
-//        security
-//                .csrf(csrf -> csrf.disable());
-//        //.cors(cors -> cors.disable());
-//        security.authorizeHttpRequests(authorizeRequests ->
-//                authorizeRequests
-//                        .requestMatchers("/assets/**").permitAll() // Allow static assets
-//                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-//                        .requestMatchers("/u/details/**").hasRole("USER")
-//                        .requestMatchers("/f/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/login", "/register", "/", "/f/c", "/f", "/f/a", "/f/a/{artist_id}").permitAll()
-//                        .anyRequest().authenticated()
-//        );
-//        security.formLogin(form -> form
-//                .loginPage("/login")
-//                .loginProcessingUrl("/login")
-//                .usernameParameter("email") // 사용자 이름 필드를 이메일로 설정
-//                .passwordParameter("password") // 비밀번호 필드 설정
-//                .defaultSuccessUrl("/f/c")); //f/c
-//
-//        security.logout(logout -> logout.logoutSuccessUrl("/f/c"));
-//        //세션
-//        security.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-//                .invalidSessionUrl("/login")
-//                .sessionFixation().migrateSession() //로그인후 세션 변경
-//                .maximumSessions(1)//한개만 유지
-//                .expiredUrl("/login"));//만료시 이동
-//
-//        return security.build();
-//
-//    }
-//
-//
-//    @Bean
-//    public UserDetailsService userDetailsService(UserService userService) {
-//        return email -> userService.searchUserByEmail(email).map(FanUserDetails::toFUDto)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-//    }
-//
-//
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//
-//       return NoOpPasswordEncoder.getInstance();
-//        return new BCryptPasswordEncoder();
-//    }
-
-//}
