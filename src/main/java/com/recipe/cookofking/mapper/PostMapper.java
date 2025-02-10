@@ -1,6 +1,6 @@
 package com.recipe.cookofking.mapper;
 
-import com.recipe.cookofking.dto.PostDto;
+import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.entity.Post;
 
 public class PostMapper {

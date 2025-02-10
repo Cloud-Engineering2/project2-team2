@@ -3,6 +3,8 @@ package com.recipe.cookofking.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "likes")
+@EntityListeners(AuditingEntityListener.class)  // 자동으로 생성일자 저장
 public class Like {
     @Id
     @Column(name = "like_id", nullable = false)

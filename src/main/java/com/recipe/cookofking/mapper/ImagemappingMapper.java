@@ -1,6 +1,6 @@
 package com.recipe.cookofking.mapper;
 
-import com.recipe.cookofking.dto.ImagemappingDto;
+import com.recipe.cookofking.dto.image.ImagemappingDto;
 import com.recipe.cookofking.entity.Imagemapping;
 
 
@@ -14,6 +14,7 @@ public class ImagemappingMapper {
                 .id(imagemapping.getId())
                 .post(PostMapper.toDto(imagemapping.getPost()))
                 .s3Url(imagemapping.getS3Url())
+                .isTemp(imagemapping.isTemp())
                 .createdDate(imagemapping.getCreatedDate())
                 .build();
     }
@@ -26,8 +27,11 @@ public class ImagemappingMapper {
                 .id(imagemappingDto.getId())
                 .post(PostMapper.toEntity(imagemappingDto.getPost()))
                 .s3Url(imagemappingDto.getS3Url())
+                .isTemp(imagemappingDto.isTemp())
                 .createdDate(imagemappingDto.getCreatedDate())
                 .build();
     }
+
+
 }
 
