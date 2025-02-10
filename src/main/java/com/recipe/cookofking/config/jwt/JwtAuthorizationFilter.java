@@ -9,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
 import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.entity.User;
 import com.recipe.cookofking.repository.UserRepository;
@@ -18,7 +21,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import software.amazon.awssdk.core.checksums.Algorithm;
 
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -55,7 +57,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     .asString();
 
             if (username != null) {
-                User user = userRepository.findBy(username)
+                User user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new RuntimeException("User not found"));
                 PrincipalDetails principalDetails = new PrincipalDetails(user);
 
