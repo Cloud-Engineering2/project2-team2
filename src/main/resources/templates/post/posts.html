@@ -73,7 +73,8 @@
                     </div>
 
                     <!-- 페이지네이션 (카드 안으로 이동) -->
-                    <nav aria-label="Page navigation">
+                    <!-- 페이지네이션 (카드 안으로 이동) -->
+                    <nav aria-label="Page navigation" th:if="${postPage.totalElements > 0}">
                         <ul class="pagination justify-content-center">
                             <!-- 이전 페이지 버튼 -->
                             <li class="page-item" th:if="${!postPage.first}">
@@ -87,14 +88,14 @@
                             <!-- 페이지 번호 버튼 -->
                             <li class="page-item"
                                 th:each="pageNum : ${#numbers.sequence(
-                                ((postPage.totalPages > 10) ?
-                                    (postPage.number <= 5 ? 0 :
-                                     (postPage.number + 4 >= postPage.totalPages ? postPage.totalPages - 10 : postPage.number - 5))
-                                    : 0),
-                                ((postPage.totalPages > 10) ?
-                                    (postPage.number <= 5 ? 9 :
-                                     (postPage.number + 4 >= postPage.totalPages ? postPage.totalPages - 1 : postPage.number + 4))
-                                    : postPage.totalPages - 1)
+                                    ((postPage.totalPages > 10) ?
+                                        (postPage.number <= 5 ? 0 :
+                                         (postPage.number + 4 >= postPage.totalPages ? postPage.totalPages - 10 : postPage.number - 5))
+                                        : 0),
+                                    ((postPage.totalPages > 10) ?
+                                        (postPage.number <= 5 ? 9 :
+                                         (postPage.number + 4 >= postPage.totalPages ? postPage.totalPages - 1 : postPage.number + 4))
+                                        : postPage.totalPages - 1)
                                 )}"
                                 th:classappend="${postPage.number == pageNum} ? 'active'">
                                 <a class="page-link"
@@ -113,6 +114,7 @@
                             </li>
                         </ul>
                     </nav>
+
 
                 </div>
             </div>
