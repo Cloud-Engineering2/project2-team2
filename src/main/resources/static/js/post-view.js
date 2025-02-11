@@ -80,7 +80,8 @@ $(document).ready(function() {
 });
 
 function goBack() {
-    if (document.referrer && ( document.referrer.includes('/post/list') || document.referrer.includes('/user/myrecipe'))) {
+    if (document.referrer && ( document.referrer.includes('/post/list')
+                            || document.referrer.includes('/user/myrecipe') || document.referrer.includes('/user/myscrap'))) {
         window.history.back();
     } else {
         window.location.href = '/post/list';

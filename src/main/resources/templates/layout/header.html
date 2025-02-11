@@ -23,16 +23,6 @@
 
 
 
-                    <li>
-                        <!-- 로그인된 경우 -->
-                        <a th:if="${#authentication != null and #authentication.name != 'anonymousUser'}"
-                           href="/post/write" class="nav-link px-2 text-white">레시피 작성하기
-                        </a>
-                        <!-- 로그인되지 않은 경우 -->
-                        <a th:if="${#authentication == null or #authentication.name == 'anonymousUser'}"
-                           href="/user/login" class="nav-link px-2 text-white">레시피 작성하기
-                        </a>
-                    </li> <!-- 레시피 메뉴 -->
 
                     <li th:if="${#authentication != null and #authentication.name != 'anonymousUser'}">
                         <!-- 로그인된 경우 -->
@@ -45,6 +35,17 @@
                         <a href="/user/myscrap" class="nav-link px-2 text-white">스크랩
                         </a>
                     </li>
+
+                    <li>
+                        <!-- 로그인된 경우 -->
+                        <a th:if="${#authentication != null and #authentication.name != 'anonymousUser'}"
+                           href="/post/write" class="nav-link px-2 text-white">레시피 작성하기
+                        </a>
+                        <!-- 로그인되지 않은 경우 -->
+                        <a th:if="${#authentication == null or #authentication.name == 'anonymousUser'}"
+                           href="/user/login" class="nav-link px-2 text-white">레시피 작성하기
+                        </a>
+                    </li> <!-- 레시피 메뉴 -->
                 </ul>
 
                     <div class="text-end">
