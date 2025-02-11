@@ -34,7 +34,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping("/write")
     public String showWriteForm() {
-        return "Post/post-write";
+        return "post/post-write";
     }
 
     // 레시피 조회 폼
