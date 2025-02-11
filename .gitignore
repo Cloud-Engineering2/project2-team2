@@ -289,4 +289,6 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+### Kubernetes secrets ###
+secrets.yaml
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,gradle,java,intellij+all,eclipse,visualstudiocode
