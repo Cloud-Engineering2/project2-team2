@@ -62,7 +62,6 @@ public class ImagemappingService {
     }
     @Transactional
     public void validateAndMarkPermanent(ImageValidationDto validationDto) {
-        System.out.println("Starting image validation and marking process...");
 
         // 1. 메인 이미지 검증 및 영구 저장
         if (validationDto.getMainImage() != null && validationDto.getMainImage().getImageId() != null) {
