@@ -167,7 +167,7 @@
                             <!-- 작성자 및 조회수 -->
                             <div class="d-flex justify-content-between text-muted info-section">
                                 <span title="작성자" th:text="${post.user != null ? post.user.username : '탈퇴한 회원'}">홍길동</span>
-                                <span title="좋아요">👍 <span th:text="${post.likeCount}">0</span></span>
+                                <span title="좋아요">❤️ <span th:text="${post.likeCount}">0</span></span>
                                 <span title="조회수">👁️ <span th:text="${post.viewCount}">0</span></span>
                             </div>
                         </div>
@@ -221,5 +221,6 @@
 
     </div>
 </div>
+<div th:replace="~{layout/footer :: footer}">Footer</div>
 </body>
 </html>
