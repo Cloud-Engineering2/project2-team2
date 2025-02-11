@@ -65,4 +65,18 @@ public class UserDto implements Serializable {
         return new User( username, email, password, role, null, null);
     }
 
+    public User toUpdatedEntity(User existingUser) {
+        return User.builder()
+                .id(existingUser.getId())  // 기존 ID 유지
+                .username(this.username)  // 변경된 값 적용
+                .email(this.email)  // 변경된 값 적용
+                .password(existingUser.getPassword())  // 기존 비밀번호 유지
+                .role(existingUser.getRole())  // 기존 역할 유지
+                .createdDate(existingUser.getCreatedDate())  // 기존 생성 날짜 유지
+                .modifiedDate(LocalDateTime.now())  // 수정 날짜 갱신
+                .build();
+    }
+
+
+    
 }

@@ -1,97 +1,82 @@
-<!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="/layout/basic">
-
-<th:block layout:fragment="title">
-
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
-	<link rel="stylesheet" th:href="@{/css/register.css}"/>
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	
+	<link href="/css/register.css" rel="stylesheet">
+ 
 </head>
 
 
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
-
-
-<div class="form-signin w-100 m-auto">
-<h3 class="h3 mb-3 fw-normal">로그인</h3>
-
-    <form id="loginForm">
-      
-   	<div class="form-floating mb-3">
-   	<label for="username">유저이름</label>
-      <input type="text" class="form-control" id="username" name="username" placeholder="이름을 입력해주세요" required>      
-    </div>
-    
-     <div class="form-floating mb-3">
-       <label for="password">비밀번호</label>
-      <input type="password" class="form-control" id="password"  name="password" placeholder="비밀번호를 입력해주세요.">
-    </div>
-    
-    <button class="btn btn-primary w-100 py-2 mt-5" type="submit">로그인</button>
   
+ <div class="form-signin w-100 m-auto">
     
-    </form>
- </div>   
+        <h2>요리왕 비룡의 레시피🎈 </h2>
+        <form id="loginForm" action="/login" method="POST">
+            <div class="form-floating mb-3">
+                <label for="username">이름</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="이름을 입력해주세요" required>
+            </div>
+            <div class="form-floating mb-3">
+                <label for="password">비밀번호</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력해주세요.">
+            </div>
+            <button class="btn btn-primary w-100 py-2 mt-5" type="submit">로그인</button>
+        </form>
+         <p class="btn btn-secondary btn-md mt-5"><a href="/user/register" class="text-secondary-emphasis text-light">회원가입</a></p>    
+
+  
+</div>
     
+  
+    <script>	
+	document.getElementById("loginForm").addEventListener("submit", function(e) {
+	    e.preventDefault(); // 폼 제출 시 새로고침 방지
 
+	    const loginData = {
+	        username: document.getElementById("username").value,
+	        password: document.getElementById("password").value
+	    };
 
+	    fetch("/user/login", {
+	        method: "POST",
+	        headers: {
+	            "Content-Type": "application/json"
+	        },
+	        body: JSON.stringify(loginData)
+	    })
+	    .then(response => {
+    if (!response.ok) {
+        return response.text();  // 오류 응답은 텍스트로 반환
+    }
+    return response.json();  // 정상적인 응답은 JSON으로 처리
+})
 
-    <script>
+	.then(data => {
+		if (data.token) {
+	        // 토큰을 localStorage에 저장
+	        localStorage.setItem("token", data.token);
+	        console.log("Token saved:", data.token);
+
+	        // 리다이렉트 처리
+	        window.location.href = data.redirect || '/';  // redirect 값이 있으면 그 경로로, 없으면 기본 '/'로 리다이렉트
+	    } else {
+	        console.error("Token not found in response");
+	    }
+})
+	    .catch(error => {
+	        console.error("Error:", error);
+	    });
+	});
+
+ 
+</script>
     
-        // 폼 제출 이벤트 처리
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // 기본 폼 제출 동작을 막음
-
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // JSON 데이터로 변환
-            const data = {
-                username: username,
-                password: password
-            };
-
-            // Fetch API로 로그인 요청
-            fetch('/user/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data) // JSON 문자열로 변환하여 전송
-            })
-            .then(response => response.json())
-            
-           .then(data => {
-        // 서버 응답에서 메시지가 로그인 성공이라면
-        if (data.message === "로그인 성공!") {
-            // 토큰이 존재하면 localStorage에 저장
-            if (data.token) {
-                localStorage.setItem("token", data.token); // 토큰을 localStorage에 저장
-                console.log("Token saved:", data.token);
-
-                // 리다이렉트 처리 (예: 대시보드 페이지로 이동)
-                window.location.href = data.redirect || '/';  // redirect 값이 있으면 그 경로로, 없으면 기본 '/'로 리다이렉트
-            } else {
-                console.error("Token not found in response");
-                alert("토큰이 응답에 없습니다.");
-            }
-        } else {
-            // 로그인 실패 시 메시지 표시
-            alert(data.message);  // 실패 메시지 출력
-        }
-    })
-            .catch(error => {
-                console.error('로그인 실패:', error);
-                alert('로그인 요청 중 오류가 발생했습니다.');
-            });
-        });
-    </script>
-
-
 </body>
 </html>
+ 
