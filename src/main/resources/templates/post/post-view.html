@@ -89,11 +89,7 @@
 
                                 <!-- 좋아요 버튼 -->
                                 <div class="text-center mt-4">
-<<<<<<< HEAD:src/main/resources/templates/post/post-view.html
                                     <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}">
-=======
-                                    <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}" th:data-user-id="${session.userId}">
->>>>>>> b767de0 (Second Version for Like):src/main/resources/templates/Post/post-view.html
                                         ❤️ 좋아요
                                     </button>
 									<p>Post ID: <span th:text="${post.id}"></span></p>
@@ -139,7 +135,6 @@
 <div id="instructions-json" th:utext="${post.instructions}" style="display:none;"></div>
 
 <script>
-<<<<<<< HEAD:src/main/resources/templates/post/post-view.html
 	$(document).ready(function() {
 	    let postId = $('#like-button').data('post-id');
 	
@@ -177,35 +172,7 @@
 	        });
 	    });
 	});
-=======
 
-    $(document).ready(function() {
-        let postId = $('#like-button').data('post-id');
-        let userId = $('#like-button').data('user-id');
-        
-        
-        $('#like-button').on('click', function() {
-            $.ajax({
-                url: '/api/v1/likes',  // 실제 API 엔드포인트로 수정하세요
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ postId: postID, userId: userId }),  // 필요한 데이터 전달 (예: 게시글 ID)
-                success: function(response) {
-                    // 서버로부터 반환된 좋아요 수로 카운트 갱신
-                    $('#like-count').text(response.likeCount);
-                },
-                error: function(xhr, status, error) {
-                    console.error('좋아요 처리 중 오류 발생:', error);
-                }
-            });
-        });
-        
-        $.get(`/api/v1/likes/${postId}`, function(response) {
-            $('#like-count').text(response.likeCount);
-        });
-        
-    });
->>>>>>> b767de0 (Second Version for Like):src/main/resources/templates/Post/post-view.html
 
     $(document).ready(function() {
         // 숨겨진 div에서 JSON 데이터 가져오기
