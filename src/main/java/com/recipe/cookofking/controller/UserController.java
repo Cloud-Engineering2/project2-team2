@@ -75,7 +75,7 @@ public class UserController {
 	/* 회원가입 페이지 이동*/
 	@GetMapping("/register")
 	public String userregister() {
-		return "/user/register";
+		return "user/register";
 	}
 	
 	@PostMapping("/register")

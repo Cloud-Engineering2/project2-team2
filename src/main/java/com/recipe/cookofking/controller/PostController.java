@@ -34,7 +34,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping("/write")
     public String showWriteForm() {
-        return "Post/post-write";
+        return "post/post-write";
     }
 
     // 레시피 조회 폼
@@ -73,7 +73,7 @@ public class PostController {
         PostViewDto postViewDto = postService.getPostById(postId);
         model.addAttribute("post", postViewDto);
 
-        return "Post/post-edit";
+        return "post/post-edit";
     }
 
 
