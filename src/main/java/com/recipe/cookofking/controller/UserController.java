@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 	
 	private final UserService userService;
-	
+
 	@GetMapping("/mypage")
 	public String myPage() {
 		return "user/mypage";

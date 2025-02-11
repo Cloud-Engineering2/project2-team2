@@ -38,10 +38,9 @@ public class PostController {
         return "Post/post-write";
     }
 
-
     // 레시피 조회 폼
     @RequestMapping("/view/{postid}")
-    public String showViewForm(@PathVariable Integer postid, Model model) {
+    public String showViewForm(@PathVariable(name = "postid") Integer postid, Model model) {
         PostViewDto postViewDto = postService.getPostById(postid);  // postid로 게시글 데이터 가져오기
         model.addAttribute("post", postViewDto);  // 게시글 정보 추가
 
@@ -67,6 +66,7 @@ public class PostController {
     }
 
 
+
     @GetMapping("/edit/{postId}")
     public String update(@PathVariable Integer postId, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -82,6 +82,7 @@ public class PostController {
 
         return "Post/post-edit";
     }
+
 
 
 
@@ -127,5 +128,4 @@ public class PostController {
                 return Sort.by(Sort.Direction.DESC, "createdDate");  // 기본값: 최신순 정렬
         }
     }
-
 }
