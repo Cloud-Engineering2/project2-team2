@@ -3,15 +3,13 @@ package com.recipe.cookofking.controller;
 import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.dto.post.PostViewDto;
-import com.recipe.cookofking.entity.Post;
 import com.recipe.cookofking.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +31,7 @@ public class PostController {
     private final PostService postService;
 
     // 레시피 작성 폼
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping("/write")
     public String showWriteForm() {
         return "Post/post-write";
@@ -40,21 +39,15 @@ public class PostController {
 
     // 레시피 조회 폼
     @RequestMapping("/view/{postid}")
-    public String showViewForm(@PathVariable(name = "postid") Integer postid, Model model) {
+    public String showViewForm(@PathVariable(name = "postid") Integer postid, Model model,
+                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
         PostViewDto postViewDto = postService.getPostById(postid);  // postid로 게시글 데이터 가져오기
         model.addAttribute("post", postViewDto);  // 게시글 정보 추가
 
-        // 현재 로그인한 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isPostOwner = false;
 
-        if (authentication != null && authentication.isAuthenticated() &&
-                authentication.getPrincipal() instanceof PrincipalDetails) {
-
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        if (principalDetails != null) {
             String currentUsername = principalDetails.getUsername();
-
-            // 작성자와 현재 로그인한 사용자가 같은지 확인
             if (postViewDto.getUsername() != null && postViewDto.getUsername().equals(currentUsername)) {
                 isPostOwner = true;
             }
@@ -66,12 +59,12 @@ public class PostController {
     }
 
 
-
+    @PreAuthorize("isAuthenticated()")  // 추가된 부분
     @GetMapping("/edit/{postId}")
-    public String update(@PathVariable Integer postId, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        String currentUsername = principalDetails.getUsername();
+    public String update(@PathVariable Integer postId, Model model,
+                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        String currentUsername = principalDetails.getUsername();  // 수정된 부분
 
         // 작성자 검증
         postService.validatePostOwner(postId, currentUsername);
