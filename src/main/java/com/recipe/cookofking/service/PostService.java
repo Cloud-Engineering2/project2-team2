@@ -99,6 +99,14 @@ public class PostService {
         return postRepository.findAll(pageable).map(PostMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
+    public Page<PostDto> getMyPostList(Pageable pageable, Integer userId) {
+        return postRepository.findByUserId(userId, pageable)
+                .map(PostMapper::toDto);
+    }
+
+
+
     @Transactional
     public void deletePost(Integer postId) {
         Post post = postRepository.findById(postId)

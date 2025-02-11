@@ -2,44 +2,62 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>  
+  <title>Title</title>
 </head>
 <body>
 <th:block th:fragment="header">
-  <header class="p-3 bg-dark text-white">
-    <div class="container">
-    
-	<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li>
-                <a href="/" class="nav-link px-2 h3" style="font-weight: bold; color: #fff; text-decoration: none;">
-               요리왕 비룡</a></li>
-                <!-- 레시피 메뉴 추가 -->
-                <li><a href="/post/list" class="nav-link px-2 text-white">레시피</a></li> <!-- 레시피 메뉴 -->
-            </ul>
-            
-              <div class="text-end">
-      
-   
-<!-- 로그인된 경우 마이페이지 및 로그아웃 버튼, 그렇지 않으면 로그인 및 회원가입 버튼 -->
-<div th:if="${#authentication != null and #authentication.name != 'anonymousUser'}">
-    <!-- 로그인된 경우 -->
-    <span class="text-white me-2" th:text="${#authentication.name} + '님 반갑습니다✨️'"></span>
-    
-    <a href="/user/mypage" class="btn btn-outline-light me-2" id="mypage">My Page</a>
-    <a href="/user/logout" role="button" id="logout" class="btn btn-outline-light me-2">Logout</a>
-</div>
-<div th:if="${#authentication == null or #authentication.name == 'anonymousUser'}">
-    <!-- 로그인되지 않은 경우 -->
-    <a href="/user/login" role="button" id="login" class="btn btn-outline-light me-2">로그인</a>
-    <a href="/user/register" role="button" id="register" class="btn btn-outline-light me-2">회원가입</a>
-</div>
+  <header class="p-3 text-white">
+        <div class="container">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <ul class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li>
+                        <a href="/" class="px-2 logo-text">
+                            요리왕 비룡
+                        </a>
+                    </li>
+                    <!-- 레시피 메뉴 추가 -->
+                    <li>
+                        <a href="/post/list" class="nav-link px-2 text-white">레시피 목록</a>
+                    </li> <!-- 레시피 메뉴 -->
 
 
 
-    
-    </div>
-    
+                    <li>
+                        <!-- 로그인된 경우 -->
+                        <a th:if="${#authentication != null and #authentication.name != 'anonymousUser'}"
+                           href="/post/write" class="nav-link px-2 text-white">레시피 작성하기
+                        </a>
+                        <!-- 로그인되지 않은 경우 -->
+                        <a th:if="${#authentication == null or #authentication.name == 'anonymousUser'}"
+                           href="/user/login" class="nav-link px-2 text-white">레시피 작성하기
+                        </a>
+                    </li> <!-- 레시피 메뉴 -->
+
+                    <li th:if="${#authentication != null and #authentication.name != 'anonymousUser'}">
+                        <!-- 로그인된 경우 -->
+                        <a href="/user/myrecipe" class="nav-link px-2 text-white">나의 레시피
+                        </a>
+                    </li>
+                </ul>
+
+                    <div class="text-end">
+                        <!-- 로그인된 경우 마이페이지 및 로그아웃 버튼, 그렇지 않으면 로그인 및 회원가입 버튼 -->
+                        <div th:if="${#authentication != null and #authentication.name != 'anonymousUser'}">
+                            <!-- 로그인된 경우 -->
+                            <span class="text-white me-2" th:text="${#authentication.name} + '님 반갑습니다✨️'"></span>
+
+                            <a href="/user/mypage" class="btn btn-outline-light me-2" id="mypage">My Page</a>
+                            <a href="/user/logout" role="button" id="logout" class="btn btn-outline-light me-2">Logout</a>
+                        </div>
+                        <div th:if="${#authentication == null or #authentication.name == 'anonymousUser'}">
+                            <!-- 로그인되지 않은 경우 -->
+                            <a href="/user/login" role="button" id="login" class="btn btn-outline-light me-2">로그인</a>
+                            <a href="/user/register" role="button" id="register" class="btn btn-outline-light me-2">회원가입</a>
+                        </div>
+
+                    </div>
+
         </div>
     
   

@@ -1,0 +1,290 @@
+
+@charset "UTF-8";
+/****************************************************************************/
+/* header css */
+/****************************************************************************/
+header {
+    background-color: #0c0e0c;
+    color: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header a.nav-link {
+    padding-top: 0.7rem;
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+header a.nav-link:hover {
+    color: #29652e;
+    text-decoration: underline;
+}
+
+/* 로고 글씨 크기 조정 */
+header .logo-text {
+    font-size: 2rem;  /* 글씨 크기 키우기 */
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: 5rem;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+header .logo-text:hover {
+    color: #e6e6e6;
+    text-decoration: underline;
+}
+
+header .btn-outline-light {
+    border-color: #ffffff;
+    color: #ffffff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header .btn-outline-light:hover {
+    background-color: #494949;
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+header .text-end span {
+    font-weight: bold;
+    margin-right: 1rem;
+    color: #ffd700;
+}
+
+@media (max-width: 768px) {
+    header a.nav-link {
+        font-size: 1rem;
+        margin-right: 0.5rem;
+    }
+
+    header .btn-outline-light {
+        margin-bottom: 0.5rem;
+    }
+}
+
+
+/****************************************************************************/
+/* login, register, mypage css */
+/****************************************************************************/
+.login .form-signin {
+    width: 100%;
+    max-width: 600px;
+    background-color: rgba(255, 255, 255);
+    padding : 5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;       /* 모서리 둥글게 */
+}
+
+
+.login h2, h3 {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.login .form-floating label {
+    padding-left: 0.75rem;
+}
+
+.login .form-control {
+    border-radius: 10px;
+    padding: 0.75rem;
+}
+
+.login .btn {
+    border-radius: 10px;
+    border: 2px solid black;  /* 검은색 테두리 추가 */
+    color: black;
+    background-color: white;
+    transition: all 0.3s ease;  /* 부드러운 전환 효과 */
+    font-weight: bold;  /* 글자 두껍게 */
+}
+
+.login .btn:hover {
+    background-color: black;  /* 호버 시 배경 검은색 */
+    color: white;  /* 글자색 흰색으로 변경 */
+    transform: scale(1.03);  /* 살짝 확대 효과 */
+}
+/****************************************************************************/
+/* post-write, post-edit 페이지 css */
+/****************************************************************************/
+
+.post-write .image-upload {
+    display: flex;
+    align-items: flex-start;
+}
+.post-write .image-upload .form-control, .image-upload textarea {
+    flex: 3;
+    height: 100%;
+}
+.post-write .image-upload .upload-btn {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    margin-left: 15px;
+    position: relative;
+}
+.post-write .image-upload .upload-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.post-write .image-upload .upload-btn input[type='file'] {
+    display: none;
+}
+.post-write .image-upload .upload-btn::before {
+    content: '+';
+    font-size: 2rem;
+    color: #ccc;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.post-write .image-upload .upload-btn img + ::before {
+    display: none;
+}
+
+/****************************************************************************/
+/* post-view 페이지 css */
+/****************************************************************************/
+    .post-view .image-container {
+        position: relative;
+        width: 100%;
+        height: 400px; /* 원하는 높이로 설정 */
+        overflow: hidden;
+        background-color: #f8f9fa; /* 이미지가 없는 경우 대비 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .post-view .cropped-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-height: 100%;
+        min-width: 100%;
+        object-fit: cover; /* 이미지 비율 유지하면서 컨테이너 채우기 */
+    }
+    /* 제목 스타일 */
+    .post-view .card-title {
+        font-size: 2rem; /* 제목 크기 */
+        font-weight: bold; /* 굵은 글씨 */
+        color: #333333; /* 어두운 회색 톤 */
+        margin-bottom: 1rem; /* 제목과 콘텐츠 간 간격 */
+    }
+
+    /* 콘텐츠 스타일 */
+    .post-view .card-content {
+        font-size: 1rem; /* 기본 텍스트 크기 */
+        line-height: 1.8; /* 줄 간격 */
+        color: #AAAAAA; /* 약간 밝은 회색 톤 */
+        margin-bottom: 1rem; /* 아래 여백 */
+    }
+
+    .post-view .square-image {
+        width: 100%;
+        aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+        object-fit: cover;   /* 넘치는 부분 자르기 */
+        object-position: center; /* 중앙 정렬 */
+    }
+
+/****************************************************************************/
+/* posts 페이지 css */
+/****************************************************************************/
+    .posts .custom-col {
+        width: 25%;    /* 4개씩 배치: 100% / 4 = 25% */
+        padding: 10px; /* 카드 간 여백 */
+    }
+
+    @media (max-width: 1200px) {
+        .posts .custom-col {
+            width: 33.33%;   /* 화면이 작아지면 3개씩 표시 */
+        }
+    }
+
+    @media (max-width: 992px) {
+        .posts .custom-col {
+            width: 50%;  /* 태블릿에서는 2개씩 표시 */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .posts .custom-col {
+            width: 100%;    /* 모바일에서는 1개씩 표시 */
+        }
+    }
+
+    .posts .image-container {
+        position: relative;
+        width: 100%;
+        height: 250px; /* 카드 리스트에 맞춰 이미지 높이 조정 */
+        overflow: hidden;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .posts .cropped-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .posts .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 0.3rem;
+        min-height: 2.5rem; /* 제목 높이 고정 */
+    }
+
+    .posts .card-text {
+        min-height: 3rem;  /* 내용 높이 고정 */
+        font-size: 0.9rem; /* 내용 글씨 크기 줄이기 */
+    }
+
+
+
+    .posts .pagination {
+        margin-top: 20px;
+    }
+
+    .posts .pagination .page-link {
+        background-color: #ffffff; /* 흰색 배경 */
+        color: #555555;           /* 진한 회색 글씨 */
+        border: 1px solid #cccccc; /* 회색 선 */
+        margin: 0 5px;            /* 페이지 간 간격 */
+        border-radius: 5px;       /* 모서리 둥글게 */
+    }
+
+    .posts .pagination .page-item.active .page-link {
+        background-color: #555555; /* 현재 페이지는 진한 회색 배경 */
+        color: #ffffff;            /* 흰색 글씨 */
+        border: 1px solid #555555;
+    }
+
+    .posts .pagination .page-item.disabled .page-link {
+        display: none; /* 비활성화된 < 또는 > 버튼 숨기기 */
+    }
+
+    .posts .info-section {
+        font-size: 0.8rem;  /* 작성자/좋아요/조회수 글씨 크기 줄이기 */
+        margin-top: 0.3rem; /* 위쪽 여백 최소화 */
+    }

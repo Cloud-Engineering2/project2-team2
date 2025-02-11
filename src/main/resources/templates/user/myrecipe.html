@@ -20,24 +20,24 @@
                     <div class="row align-items-center mb-4">
                         <!-- 좌측: 레시피 수 표시 -->
                         <div class="col-md-6">
-                            <h5 class="mb-0">총 <strong th:text="${#numbers.formatInteger(totalPosts, 0, 'COMMA')}">0</strong>개의 맛있는 레시피가 있습니다.</h5>
+                            <h5 class="mb-0">총 <strong th:text="${#numbers.formatInteger(totalPosts, 0, 'COMMA')}">0</strong>개의 작성한 레시피가 있습니다.</h5>
                         </div>
 
                         <!-- 우측: 정렬 버튼 -->
                         <div class="col-md-6 text-md-right sort-buttons">
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'latest'} ? 'active'"
-                                    th:onclick="'location.href=\'/post/list?sort=latest\''">
+                                    th:onclick="'location.href=\'/user/myrecipe?sort=latest\''">
                                 최신순
                             </button>
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'views'} ? 'active'"
-                                    th:onclick="'location.href=\'/post/list?sort=views\''">
+                                    th:onclick="'location.href=\'/user/myrecipe?sort=views\''">
                                 조회순
                             </button>
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'likes'} ? 'active'"
-                                    th:onclick="'location.href=\'/post/list?sort=likes\''">
+                                    th:onclick="'location.href=\'/user/myrecipe?sort=likes\''">
                                 좋아요순
                             </button>
                         </div>
@@ -78,7 +78,7 @@
                             <!-- 이전 페이지 버튼 -->
                             <li class="page-item" th:if="${!postPage.first}">
                                 <a class="page-link"
-                                   th:href="@{'/post/list?page=' + ${postPage.number - 1} + '&sort=' + ${currentSort}}"
+                                   th:href="@{'/user/myrecipe?page=' + ${postPage.number - 1} + '&sort=' + ${currentSort}}"
                                    aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
@@ -98,7 +98,7 @@
                                 )}"
                                 th:classappend="${postPage.number == pageNum} ? 'active'">
                                 <a class="page-link"
-                                   th:href="@{'/post/list?page=' + ${pageNum + 1} + '&sort=' + ${currentSort}}"
+                                   th:href="@{'/user/myrecipe?page=' + ${pageNum + 1} + '&sort=' + ${currentSort}}"
                                    th:text="${pageNum + 1}">
                                 </a>
                             </li>
@@ -106,7 +106,7 @@
                             <!-- 다음 페이지 버튼 -->
                             <li class="page-item" th:if="${!postPage.last}">
                                 <a class="page-link"
-                                   th:href="@{'/post/list?page=' + ${postPage.number + 1} + '&sort=' + ${currentSort}}"
+                                   th:href="@{'/user/myrecipe?page=' + ${postPage.number + 1} + '&sort=' + ${currentSort}}"
                                    aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>

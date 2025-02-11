@@ -74,7 +74,7 @@ public class SecurityConfig {
 	        .formLogin(form -> form
 	            .loginPage("/user/login")  // 로그인 페이지 지정
 	            .loginProcessingUrl("/user/login") // 로그인 요청 처리 URL
-	            .defaultSuccessUrl("/post/write", true) // 로그인 성공 시 이동할 페이지
+	            .defaultSuccessUrl("/post/list", true) // 로그인 성공 시 이동할 페이지
 	            .permitAll()
 	        )
 	        .logout(logout -> logout
