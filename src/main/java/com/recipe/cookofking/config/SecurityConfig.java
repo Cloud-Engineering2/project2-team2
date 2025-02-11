@@ -4,15 +4,18 @@ package com.recipe.cookofking.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -81,6 +84,17 @@ public class SecurityConfig {
 	    return http.build();
 	}
     
+	// 로그인 성공 후 처리하는 서비스나 필터에서
+	public void loginSuccessHandler(PrincipalDetails principalDetails) {
+	    Authentication authentication = new UsernamePasswordAuthenticationToken(
+	            principalDetails,  // PrincipalDetails 객체 (로그인한 사용자의 정보)
+	            null,  // 비밀번호는 null로 설정 (이미 검증되었으므로)
+	            principalDetails.getAuthorities()  // 권한 정보
+	    );
+
+	    // SecurityContext에 Authentication 객체를 설정
+	    SecurityContextHolder.getContext().setAuthentication(authentication);
+	}
     
     
     @Bean

@@ -55,45 +55,6 @@ public class UserApiController {
 	
 	
 	
-	@GetMapping("/mypage")
-	public ResponseEntity<?> getUserDetail(HttpServletRequest request, Authentication authentication) {
-	    String authHeader = request.getHeader("Authorization");
-	    System.out.println("Authorization 헤더: " + authHeader); // 콘솔에서 확인
-
-	    if (authentication == null) {
-	        System.out.println("인증 실패: authentication 객체가 null");
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-	    }
-
-	    PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-	    System.out.println("인증된 사용자 USERNAME: " + userDetails.getUsername()); // 확인용
-	    
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("username", userDetails.getUsername());
-	    response.put("email", userDetails.getUserDto().getEmail());
-	   
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-	    String formattedDate = userDetails.getUserDto().getCreatedDate().format(formatter);
-	    response.put("createdDate", formattedDate);
-
-	    return ResponseEntity.ok(response);
-	}
-	
-	@PutMapping("/mypage")
-	public ResponseEntity<?> updateUserInfo(
-	        @AuthenticationPrincipal PrincipalDetails userDetails, // 현재 로그인한 유저 정보 가져오기
-	        @RequestBody UserRequest userRequest) {  // 클라이언트에서 수정할 데이터 받기
-
-	    if (userDetails == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-	    }
-
-	    String username = userDetails.getUsername(); // 현재 로그인한 유저명
-//	    UserResponse updatedUser = userService.updateUser(username, userRequest); 임시 주석처리
-
-	    return ResponseEntity.ok(null); //임시수정
-	}
-
 	
 	
 }

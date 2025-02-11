@@ -2,14 +2,23 @@ package com.recipe.cookofking.controller;
 
 
 
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.dto.UserDto;
 import com.recipe.cookofking.service.UserService;
 
@@ -26,9 +35,79 @@ public class UserController {
 	
 	private final UserService userService;
 
+//	@GetMapping("/mypage")
+//	public String myPage() {
+//		return "user/mypage";
+//	}
+	
+	@GetMapping("/mypage/checkSession")
+	public ResponseEntity<?> checkSession() {
+	    // 현재 인증된 사용자 정보 확인
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+	    if (authentication == null || !authentication.isAuthenticated()) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+	    }
+	    return ResponseEntity.ok("로그인 상태입니다.");
+	}
+	
+	@GetMapping("/session-info")
+	public String getSessionInfo(HttpServletRequest request) {
+	    HttpSession session = request.getSession(false); // 세션이 없으면 null 반환
+	    if (session == null) {
+	        return "세션이 없습니다.";
+	    }
+
+	    SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+	    if (securityContext == null || securityContext.getAuthentication() == null) {
+	        return "로그인되지 않은 사용자입니다.";
+	    }
+
+	    Authentication authentication = securityContext.getAuthentication();
+	    return "로그인된 사용자: " + authentication.getName();
+	}
+
+	
 	@GetMapping("/mypage")
-	public String myPage() {
-		return "user/mypage";
+	public String getUserDetail(Authentication authentication, Model model) {
+	    if (authentication == null) {
+	        return "redirect:/user/login"; // 로그인 페이지로 리다이렉트
+	    }
+
+	    PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+
+	    model.addAttribute("username", userDetails.getUsername());
+	    model.addAttribute("email", userDetails.getUserDto().getEmail());
+
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	    String formattedDate = userDetails.getUserDto().getCreatedDate().format(formatter);
+	    model.addAttribute("createdDate", formattedDate);
+
+	    return "user/mypage"; // Thymeleaf 템플릿 이름
+	}
+
+	
+	@PutMapping("/mypage/update")
+	public ResponseEntity<?> updateUserEmail(@RequestBody UserDto userDto, Authentication authentication) {
+	    if (authentication == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+	    }
+
+	    PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+	    
+	    userDto.setUsername(userDetails.getUsername());
+
+	    // 이메일 값이 null이거나 비어있는지 확인
+	    if (userDto.getEmail() == null || userDto.getEmail().trim().isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일을 입력해 주세요.");
+	    }
+
+	    try {
+	        userService.updateUserEmail(userDto);
+	        return ResponseEntity.ok("이메일이 성공적으로 업데이트되었습니다.");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 업데이트 실패: " + e.getMessage());
+	    }
 	}
 
 	
@@ -39,27 +118,26 @@ public class UserController {
 		
 	    return "user/login"; // 로그인 페이지로 이동
 	}
-	
 
 
-	@PostMapping("/user/login")
-	public String login(@RequestParam String username, 
-	                    @RequestParam String password, 
-	                    HttpServletRequest request, 
-	                    RedirectAttributes redirectAttributes) {
-	    try {
-	        UserDto userDto = userService.login(username, password);
-
-	        // ✅ 직접 세션에 유저 정보 저장
-	        HttpSession session = request.getSession();
-	        session.setAttribute("user", userDto);
-
-	        return "redirect:/user/mypage"; // 로그인 성공 시 마이페이지로 이동
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("error", "Invalid username or password");
-	        return "redirect:/user/login"; // 로그인 실패 시 다시 로그인 페이지로
-	    }
-	}
+//	@PostMapping("/login")
+//	public String login(@RequestParam String username, 
+//	                    @RequestParam String password, 
+//	                    HttpServletRequest request, 
+//	                    RedirectAttributes redirectAttributes) {
+//	    try {
+//	        UserDto userDto = userService.login(username, password);
+//
+//	        // ✅ 직접 세션에 유저 정보 저장
+//	        HttpSession session = request.getSession();
+//	        session.setAttribute("user", userDto);
+//
+//	        return "redirect:/user/mypage"; // 로그인 성공 시 마이페이지로 이동
+//	    } catch (Exception e) {
+//	        redirectAttributes.addFlashAttribute("error", "Invalid username or password");
+//	        return "redirect:/user/login"; // 로그인 실패 시 다시 로그인 페이지로
+//	    }
+//	}
 	 @PostMapping("/user/logout")
 	    public String logout(HttpServletRequest request) {
 	        HttpSession session = request.getSession(false);
