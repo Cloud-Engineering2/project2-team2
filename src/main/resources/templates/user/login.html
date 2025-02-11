@@ -13,11 +13,11 @@
 
 
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
-  
+
  <div class="form-signin w-100 m-auto">
-    
+
         <h2>요리왕 비룡의 레시피🎈 </h2>
-        <form id="loginForm" action="/login" method="POST">
+        <form id="loginForm">
             <div class="form-floating mb-3">
                 <label for="username">이름</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="이름을 입력해주세요" required>
@@ -28,55 +28,13 @@
             </div>
             <button class="btn btn-primary w-100 py-2 mt-5" type="submit">로그인</button>
         </form>
-         <p class="btn btn-secondary btn-md mt-5"><a href="/user/register" class="text-secondary-emphasis text-light">회원가입</a></p>    
+         <p class="btn btn-secondary btn-md mt-5"><a href="/user/register" class="text-secondary-emphasis text-light">회원가입</a></p>
 
-  
+
 </div>
     
   
-    <script>	
-	document.getElementById("loginForm").addEventListener("submit", function(e) {
-	    e.preventDefault(); // 폼 제출 시 새로고침 방지
 
-	    const loginData = {
-	        username: document.getElementById("username").value,
-	        password: document.getElementById("password").value
-	    };
-
-	    fetch("/user/login", {
-	        method: "POST",
-	        headers: {
-	            "Content-Type": "application/json"
-	        },
-	        body: JSON.stringify(loginData)
-	    })
-	    .then(response => {
-    if (!response.ok) {
-        return response.text();  // 오류 응답은 텍스트로 반환
-    }
-    return response.json();  // 정상적인 응답은 JSON으로 처리
-})
-
-
-	.then(data => {
-		if (data.token) {
-	        // 토큰을 localStorage에 저장
-	        localStorage.setItem("token", data.token);
-	        console.log("Token saved:", data.token);
-
-	        // 리다이렉트 처리
-	        window.location.href = data.redirect || '/';  // redirect 값이 있으면 그 경로로, 없으면 기본 '/'로 리다이렉트
-	    } else {
-	        console.error("Token not found in response");
-	    }
-})
-	    .catch(error => {
-	        console.error("Error:", error);
-	    });
-	});
-
- 
-</script>
     
 
     <script>
@@ -141,4 +99,3 @@
 
 </body>
 </html>
- 

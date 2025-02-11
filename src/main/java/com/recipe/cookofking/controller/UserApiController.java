@@ -89,9 +89,9 @@ public class UserApiController {
 	    }
 
 	    String username = userDetails.getUsername(); // 현재 로그인한 유저명
-	    UserResponse updatedUser = userService.updateUser(username, userRequest);
+//	    UserResponse updatedUser = userService.updateUser(username, userRequest); 임시 주석처리
 
-	    return ResponseEntity.ok(updatedUser);
+	    return ResponseEntity.ok(null); //임시수정
 	}
 
 	

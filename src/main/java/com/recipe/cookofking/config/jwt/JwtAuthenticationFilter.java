@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	     String jwtToken = JWT.create()
 	             .withSubject(principalDetails.getUsername())
 	             .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-	             .withClaim("uid", principalDetails.getUser().getUsername())
+	             .withClaim("username", principalDetails.getUser().getUsername())
 	             .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
 	     // 토큰을 응답 본문으로 JSON 형태로 반환
