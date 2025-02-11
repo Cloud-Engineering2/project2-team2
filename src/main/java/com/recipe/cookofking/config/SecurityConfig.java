@@ -8,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +19,7 @@ import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 @RequiredArgsConstructor
 @Configuration
@@ -65,19 +65,18 @@ public class SecurityConfig {
 	            .requestMatchers("/post/edit/**", "/api/**").authenticated()  // 인증 필요
 	            .anyRequest().permitAll()
 	        )
-	        .sessionManagement(session -> session
-	            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
-				.invalidSessionUrl("/user/login")  // 세션 만료 후 이동할 URL
-				.maximumSessions(1)  // 최대 세션 수
-				.expiredUrl("/user/login?expired=true")  // 세션 만료 시 이동할 URL
-	        )
+				.sessionManagement(session -> session
+					.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
+				)
+				.securityContext(securityContext -> securityContext
+					.securityContextRepository(new HttpSessionSecurityContextRepository()) // 세션에 인증 정보를 저장
+				)
 	        .formLogin(form -> form
 	            .loginPage("/user/login")  // 로그인 페이지 지정
 	            .loginProcessingUrl("/user/login") // 로그인 요청 처리 URL
 	            .defaultSuccessUrl("/post/write", true) // 로그인 성공 시 이동할 페이지
 	            .permitAll()
 	        )
-			.anonymous(AbstractHttpConfigurer::disable) // 익명 사용자 비활성화 가능
 	        .logout(logout -> logout
 	            .logoutUrl("/user/logout") // 로그아웃 요청 URL
 	            .logoutSuccessUrl("/user/login") // 로그아웃 성공 시 이동할 페이지
