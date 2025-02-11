@@ -14,7 +14,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.recipe.cookofking.config.jwt.JwtProperties;
 import com.recipe.cookofking.dto.UserDto;
 import com.recipe.cookofking.dto.request.UserRequest;
-import com.recipe.cookofking.dto.response.UserResponse;
+
 import com.recipe.cookofking.entity.User;
 import com.recipe.cookofking.repository.UserRepository;
 
@@ -82,18 +82,6 @@ public class UserService {
 		return UserDto.fromEntity(user);
 	}
 	
-	public UserResponse updateUser(String username, UserRequest userRequest) {
-	    User user = userRepository.findByUsername(username)
-	            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-	    // 기존 엔티티의 데이터 유지하면서 username과 email 업데이트
-	    user.updateUser(userRequest.getUsername(), userRequest.getEmail());
-
-	    userRepository.save(user);  // 변경사항 저장
-
-	    return new UserResponse(user);
-	}
-
 
 
 }
