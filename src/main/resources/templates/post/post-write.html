@@ -53,7 +53,7 @@
     </style>
 </head>
 <body class="bg-light">
-
+<div th:replace="~{layout/header :: header}">Header</div>
 <!-- 전체 레이아웃을 감싸는 컨테이너 -->
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
@@ -324,6 +324,6 @@
         });
     });
 </script>
-
+<div th:replace="~{layout/footer :: footer}">Footer</div>
 </body>
 </html>

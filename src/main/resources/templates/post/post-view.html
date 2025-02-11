@@ -53,7 +53,7 @@
     </style>
 </head>
 <body class="bg-light">
-
+<div th:replace="~{layout/header :: header}">Header</div>
     <div class="container mt-5 mb-5">
         <div class="row justify-content-center">
 
@@ -89,13 +89,13 @@
                                 <!-- 수정 버튼 (작성자만 보이도록 설정) -->
                                 <div class="text-right mb-3" th:if="${isPostOwner}">
                                     <a th:href="@{'/post/edit/' + ${post.id}}" class="btn btn-primary btn-sm">수정하기</a>
+                                    <button class="btn btn-danger btn-sm" id="delete-button" th:data-post-id="${post.id}">삭제하기</button>
                                 </div>
                                 <!-- 좋아요 버튼 -->
                                 <div class="text-center mt-4">
-                                    <button class="btn btn-outline-danger" id="like-button">
+                                    <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}">
                                         ❤️ 좋아요
                                     </button>
-
                                     <!-- 좋아요 수 표시 -->
                                     <p class="mt-2 mb-0 text-muted small">
                                         좋아요 수: <span id="like-count" th:text="${post.likeCount}">0</span>
@@ -137,6 +137,63 @@
 <div id="instructions-json" th:utext="${post.instructions}" style="display:none;"></div>
 
 <script>
+
+	$(document).ready(function() {
+	    let postId = $('#like-button').data('post-id');
+	
+	    console.log("postId: ", postId);  // 값 확인
+	
+	    if (!postId) {
+	        console.error("postId가 존재하지 않습니다.");
+	        return;
+	    }
+	
+	    // ✅ 현재 좋아요 수 가져오기
+	    $.get(`/api/v1/likes/${postId}`, function(response) {
+	        $('#like-count').text(response.likeCount);
+	    });
+	
+	    $('#like-button').on('click', function() {
+	        let likeCountElement = $('#like-count');
+	        let currentCount = parseInt(likeCountElement.text(), 10) || 0; 
+	
+	        // ✅ UI 즉시 반영
+	        likeCountElement.text(currentCount + 1);
+	
+	        $.ajax({
+	            url: '/api/v1/likes',
+	            type: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify({ postId: postId }), // ✅ userId 없이 요청
+	            success: function(response) {
+	                likeCountElement.text(response.likeCount); // 최신 값 적용
+	            },
+	            error: function(xhr, status, error) {
+	                console.error('좋아요 처리 중 오류 발생:', error);
+	                likeCountElement.text(currentCount); // 실패 시 원래 값으로 복구
+	            }
+	        });
+	    });
+
+        $('#delete-button').on('click', function() {
+            if (confirm('정말로 이 레시피를 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: `/api/v1/delete-recipe/${postId}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        alert(response.message);
+                        window.location.href = '/post/list';
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('삭제 처리 중 오류 발생:', error);
+                        alert('레시피 삭제에 실패했습니다.');
+                    }
+                });
+            }
+        });
+
+	});
+
     function goBack() {
         if (document.referrer && document.referrer.includes('/post/list')) {
             window.history.back();
@@ -145,23 +202,6 @@
         }
     }
 
-    $(document).ready(function() {
-        $('#like-button').on('click', function() {
-            $.ajax({
-                url: '/api/v1/like',  // 실제 API 엔드포인트로 수정하세요
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ postId: 1 }),  // 필요한 데이터 전달 (예: 게시글 ID)
-                success: function(response) {
-                    // 서버로부터 반환된 좋아요 수로 카운트 갱신
-                    $('#like-count').text(response.likeCount);
-                },
-                error: function(xhr, status, error) {
-                    console.error('좋아요 처리 중 오류 발생:', error);
-                }
-            });
-        });
-    });
 
     $(document).ready(function() {
         // 숨겨진 div에서 JSON 데이터 가져오기
@@ -203,8 +243,5 @@
         });
     });
 </script>
-
-
-
 </body>
 </html>

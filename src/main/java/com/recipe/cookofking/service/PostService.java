@@ -13,7 +13,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -100,6 +99,12 @@ public class PostService {
         return postRepository.findAll(pageable).map(PostMapper::toDto);
     }
 
+    @Transactional
+    public void deletePost(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("해당 게시글을 찾을 수 없습니다."));
+        postRepository.delete(post);
+    }
 
     public void validatePostOwner(Integer postId, String currentUsername) {
         Post post = postRepository.findById(postId)

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +62,6 @@ public class ImagemappingService {
     }
     @Transactional
     public void validateAndMarkPermanent(ImageValidationDto validationDto) {
-        System.out.println("Starting image validation and marking process...");
 
         // 1. 메인 이미지 검증 및 영구 저장
         if (validationDto.getMainImage() != null && validationDto.getMainImage().getImageId() != null) {
@@ -115,6 +113,16 @@ public class ImagemappingService {
         System.out.println("Image validation and marking process completed.");
     }
 
+    // 게시글 ID로 이미지 임시 처리
+    @Transactional
+    public void markImagesAsTemporaryByPostId(Integer postId) {
+        List<Imagemapping> images = imagemappingRepository.findByPost_Id(postId);  // 수정된 부분
+        for (Imagemapping image : images) {
+            image.unmarkAsPermanent();
+            image.setPost(null);
+            imagemappingRepository.save(image);
+        }
+    }
 
     public boolean isImageLinkedToPost(String imageUrl, Integer postId) {
         return imagemappingRepository.findByS3Url(imageUrl)
