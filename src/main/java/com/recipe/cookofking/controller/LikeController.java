@@ -1,22 +1,19 @@
 package com.recipe.cookofking.controller;
 
+
 import com.recipe.cookofking.service.LikeService;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/api/v1/likes")
@@ -26,8 +23,8 @@ public class LikeController {
     public LikeController(LikeService likeService) {
         this.likeService = likeService;
     }
-
-    // 📌 좋아요 추가/삭제 API
+    
+    // 📌 좋아요 추가/취소 API
     @PostMapping
     public ResponseEntity<?> toggleLike(@RequestBody Map<String, Object> request) {
         try {
@@ -45,7 +42,6 @@ public class LikeController {
         }
     }
 
-    
     // 📌 좋아요 개수 조회 API
     @GetMapping("/{postId}")
     public ResponseEntity<?> getLikeCount(@PathVariable(name = "postId") Integer postId) {

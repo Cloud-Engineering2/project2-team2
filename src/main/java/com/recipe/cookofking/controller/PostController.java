@@ -85,5 +85,4 @@ public class PostController {
                 return Sort.by(Sort.Direction.DESC, "createdDate");  // 기본값: 최신순 정렬
         }
     }
-
 }

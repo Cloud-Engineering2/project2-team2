@@ -89,7 +89,11 @@
 
                                 <!-- 좋아요 버튼 -->
                                 <div class="text-center mt-4">
+<<<<<<< HEAD:src/main/resources/templates/post/post-view.html
                                     <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}">
+=======
+                                    <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}" th:data-user-id="${session.userId}">
+>>>>>>> dd8358fe94f9623cb2090d46bbc64863ba8d205b:src/main/resources/templates/Post/post-view.html
                                         ❤️ 좋아요
                                     </button>
 									<p>Post ID: <span th:text="${post.id}"></span></p>
@@ -172,7 +176,6 @@
 	        });
 	    });
 	});
-
 
     $(document).ready(function() {
         // 숨겨진 div에서 JSON 데이터 가져오기
