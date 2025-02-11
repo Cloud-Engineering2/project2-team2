@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Title</title>  
@@ -16,17 +15,18 @@
 	
     <div class="text-end">
         <!-- 로그인된 사용자의 이름을 표시 -->
-        <span id="username" class="text-white me-2" sec:authentication="principal.username"></span>
+       <!--  <span id="" class="text-white me-2" sec:authentication="principal.username"></span> -->
     
-        <!-- 로그인된 경우 마이페이지 및 로그아웃 버튼, 그렇지 않으면 로그인 및 회원가입 버튼 -->
+        <!-- 로그인된 경우 마이페이지 및 로그아웃 버튼, 그렇지 않으면 로그인 및 회원가입 버튼
         <div sec:authorize="isAuthenticated()">
-            <button class="btn btn-outline-light me-2" id="mypage">My Page</button>
+            <a href="/user/mypage" class="btn btn-outline-light me-2" id="mypage">My Page</a>
             <a href="/user/logout" role="button" id="logout" class="btn btn-outline-light me-2">Logout</a>
         </div>
         <div sec:authorize="!isAuthenticated()">
             <a href="/user/login" role="button" id="login" class="btn btn-outline-light me-2">로그인</a>
             <a href="/user/register" role="button" id="register" class="btn btn-outline-light me-2">회원가입</a>
         </div>
+         -->
     </div>
         </div>
     </div>
