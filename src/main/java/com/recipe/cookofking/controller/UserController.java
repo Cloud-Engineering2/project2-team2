@@ -35,10 +35,7 @@ public class UserController {
 	
 	private final UserService userService;
 
-//	@GetMapping("/mypage")
-//	public String myPage() {
-//		return "user/mypage";
-//	}
+
 	
 	@GetMapping("/mypage/checkSession")
 	public ResponseEntity<?> checkSession() {
@@ -87,6 +84,7 @@ public class UserController {
 	}
 
 	
+	// 이메일로
 	@PutMapping("/mypage/update")
 	public ResponseEntity<?> updateUserEmail(@RequestBody UserDto userDto, Authentication authentication) {
 	    if (authentication == null) {
@@ -138,6 +136,7 @@ public class UserController {
 //	        return "redirect:/user/login"; // 로그인 실패 시 다시 로그인 페이지로
 //	    }
 //	}
+	
 	 @PostMapping("/user/logout")
 	    public String logout(HttpServletRequest request) {
 	        HttpSession session = request.getSession(false);

@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.repository.UserRepository;
@@ -66,6 +67,9 @@ public class SecurityConfig {
 	        )
 	        .sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
+	        )
+	        .securityContext(securityContext -> securityContext
+	                .securityContextRepository(new HttpSessionSecurityContextRepository()) // 세션에 인증 정보를 저장
 	        )
 	        .formLogin(form -> form
 	            .loginPage("/user/login")  // 로그인 페이지 지정
