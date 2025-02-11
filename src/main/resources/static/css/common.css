@@ -29,7 +29,7 @@ header .logo-text {
     font-size: 2rem;  /* 글씨 크기 키우기 */
     font-weight: bold;
     color: #ffffff;
-    margin-right: 5rem;
+    margin-right: 3rem;
     transition: color 0.3s ease;
     text-decoration: none;
 }

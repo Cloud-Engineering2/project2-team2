@@ -17,6 +17,6 @@ import java.time.LocalDateTime;
 public class LikeDto implements Serializable {
     Integer id;
     PostDto post;
-    // UserDto user;
+    UserDto user;
     LocalDateTime createdDate;
 }

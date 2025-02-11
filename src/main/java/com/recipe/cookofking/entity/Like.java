@@ -24,24 +24,12 @@ public class Like {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Column(name = "createdDate")
-    @CreatedDate
-    private LocalDateTime createdDate;
-    
-    // ✅ Post, User를 설정하는 Setter 추가
-    public void setPost(Post post) {
-        this.post = post;
-    }
-    
-    /*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    */
 
-    /*
-    public void setUser(User user) {
-        this.user = user;
-    }
-    */
+    @Column(name = "createdDate")
+    @CreatedDate
+    private LocalDateTime createdDate;
+
 }

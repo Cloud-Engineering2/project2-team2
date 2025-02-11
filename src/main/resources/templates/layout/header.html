@@ -39,6 +39,12 @@
                         <a href="/user/myrecipe" class="nav-link px-2 text-white">나의 레시피
                         </a>
                     </li>
+
+                    <li th:if="${#authentication != null and #authentication.name != 'anonymousUser'}">
+                        <!-- 로그인된 경우 -->
+                        <a href="/user/myscrap" class="nav-link px-2 text-white">스크랩
+                        </a>
+                    </li>
                 </ul>
 
                     <div class="text-end">

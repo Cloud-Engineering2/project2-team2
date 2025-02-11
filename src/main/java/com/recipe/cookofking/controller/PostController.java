@@ -45,16 +45,19 @@ public class PostController {
         model.addAttribute("post", postViewDto);  // 게시글 정보 추가
 
         boolean isPostOwner = false;
-
+        boolean hasLiked = false;
         if (principalDetails != null) {
             String currentUsername = principalDetails.getUsername();
+            Integer userId = principalDetails.getUser().getId();
             if (postViewDto.getUsername() != null && postViewDto.getUsername().equals(currentUsername)) {
                 isPostOwner = true;
             }
+
+            // 좋아요 여부 확인
+            hasLiked = postService.hasUserLikedPost(postid, userId);
         }
-
         model.addAttribute("isPostOwner", isPostOwner);  // 작성자 여부 추가
-
+        model.addAttribute("hasLiked", hasLiked);  // 좋아요 여부 추가
         return "post/post-view";  // post-view.html 렌더링
     }
 

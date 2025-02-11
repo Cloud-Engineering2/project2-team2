@@ -13,7 +13,7 @@ public class LikeMapper {
         return LikeDto.builder()
                 .id(like.getId())
                 .post(PostMapper.toDto(like.getPost()))
-                //.user(UserMapper.toDto(like.getUser()))
+                .user(UserMapper.toDto(like.getUser()))
                 .createdDate(like.getCreatedDate())
                 .build();
     }
@@ -25,7 +25,7 @@ public class LikeMapper {
         return Like.builder()
                 .id(likeDto.getId())
                 .post(PostMapper.toEntity(likeDto.getPost()))
-                //.user(UserMapper.toEntity(likeDto.getUser()))
+                .user(UserMapper.toEntity(likeDto.getUser()))
                 .createdDate(likeDto.getCreatedDate())
                 .build();
     }

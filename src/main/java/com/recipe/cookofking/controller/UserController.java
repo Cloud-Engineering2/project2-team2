@@ -130,7 +130,7 @@ public class UserController {
     }
 
 
-	/* 로그인 페이지 */
+	/* 내 레시피 페이지 */
 	@GetMapping("/myrecipe")
 	public String getMyPostList(Authentication authentication, Model model,
 							  @RequestParam(defaultValue = "1") int page,
@@ -164,6 +164,42 @@ public class UserController {
 		model.addAttribute("currentPage", page);  // 현재 페이지를 모델에 추가 (1부터 시작)
 
 		return "user/myrecipe";  // posts.html로 렌더링
+	}
+
+
+	/* 내 레시피 페이지 */
+	@GetMapping("/myscrap")
+	public String getMyScrapList(Authentication authentication, Model model,
+								@RequestParam(defaultValue = "1") int page,
+								@RequestParam(defaultValue = "20") int size,
+								@RequestParam(defaultValue = "latest") String sort) {
+
+
+		if (authentication == null) {
+			return "redirect:/user/login"; // 로그인 페이지로 리다이렉트
+		}
+
+		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		Integer userId = userDetails.getUserDto().getId();
+
+
+		// 페이지 번호를 0부터 시작하도록 조정
+		int adjustedPage = (page > 0) ? page - 1 : 0;
+
+		// 정렬 기준 설정
+		Sort sortOrder = getSortOrder(sort);
+		PageRequest pageRequest = PageRequest.of(adjustedPage, size, sortOrder);
+
+		// 스크랩한 게시글 조회
+		Page<PostDto> postPage = postService.getMyScrapList(pageRequest, userId);
+
+		// 모델에 데이터 추가
+		model.addAttribute("postPage", postPage);
+		model.addAttribute("totalPosts", postPage.getTotalElements());
+		model.addAttribute("currentSort", sort);
+		model.addAttribute("currentPage", page);  // 현재 페이지를 모델에 추가 (1부터 시작)
+
+		return "user/myscrap";  // posts.html로 렌더링
 	}
 
 	// 정렬 기준에 따라 Sort 객체 반환

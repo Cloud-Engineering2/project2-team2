@@ -9,6 +9,7 @@ import com.recipe.cookofking.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,27 +25,35 @@ public class LikeService {
     }
 
     @Transactional
-    public int toggleLike(Integer postId) {
+    public Map<String, Object> toggleLike(Integer postId, Integer userId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-        Optional<Like> existingLike = likeRepository.findByPost(post);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        Optional<Like> existingLike = likeRepository.findByPostAndUser(post, user);
+        String action;
         if (existingLike.isPresent()) {
-            // 🚨 기존 좋아요가 있다면 삭제
             likeRepository.delete(existingLike.get());
-            post.decrementLikeCount(); // ✅ Post의 좋아요 수 감소
+            post.decrementLikeCount();
+            action = "unscrapped";
         } else {
-            // 🚀 기존 좋아요가 없다면 추가
-            Like newLike = Like.builder().post(post).build();
+            Like newLike = Like.builder().post(post).user(user).build();
             likeRepository.save(newLike);
-            post.incrementLikeCount(); // ✅ Post의 좋아요 수 증가
+            post.incrementLikeCount();
+            action = "scrapped";
         }
 
-        postRepository.save(post); // ✅ 좋아요 수 저장 (중요!)
-        return post.getLikeCount(); // 🚀 변경된 좋아요 수 반환
+        postRepository.save(post);
+        return Map.of(
+                "likeCount", post.getLikeCount(),
+                "action", action
+        );
     }
-    
+
+
+
     @Transactional
     public int getLikeCount(Integer postId) {
     	Post post = postRepository.findById(postId).orElseThrow(() -> 

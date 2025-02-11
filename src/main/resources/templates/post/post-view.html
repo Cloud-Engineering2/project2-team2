@@ -49,9 +49,15 @@
                                 </div>
                                 <!-- 좋아요 버튼 -->
                                 <div class="text-center mt-4">
-                                    <button class="btn btn-outline-danger" id="like-button" th:data-post-id="${post.id}">
-                                        ❤️ 좋아요
+                                    <button
+                                            class="btn"
+                                            th:classappend="${hasLiked} ? 'btn-danger' : 'btn-outline-danger'"
+                                            id="like-button"
+                                            th:data-post-id="${post.id}">
+                                        ❤️ 스크랩
                                     </button>
+
+
                                     <!-- 좋아요 수 표시 -->
                                     <p class="mt-2 mb-0 text-muted small">
                                         좋아요 수: <span id="like-count" th:text="${post.likeCount}">0</span>
@@ -91,113 +97,6 @@
 <!-- 숨겨진 div로 JSON 데이터를 저장 -->
 <div id="ingredients-json" th:utext="${post.ingredients}" style="display:none;"></div>
 <div id="instructions-json" th:utext="${post.instructions}" style="display:none;"></div>
-
-<script>
-
-	$(document).ready(function() {
-	    let postId = $('#like-button').data('post-id');
-	
-	    console.log("postId: ", postId);  // 값 확인
-	
-	    if (!postId) {
-	        console.error("postId가 존재하지 않습니다.");
-	        return;
-	    }
-	
-	    // ✅ 현재 좋아요 수 가져오기
-	    $.get(`/api/v1/likes/${postId}`, function(response) {
-	        $('#like-count').text(response.likeCount);
-	    });
-	
-	    $('#like-button').on('click', function() {
-	        let likeCountElement = $('#like-count');
-	        let currentCount = parseInt(likeCountElement.text(), 10) || 0; 
-	
-	        // ✅ UI 즉시 반영
-	        likeCountElement.text(currentCount + 1);
-	
-	        $.ajax({
-	            url: '/api/v1/likes',
-	            type: 'POST',
-	            contentType: 'application/json',
-	            data: JSON.stringify({ postId: postId }), // ✅ userId 없이 요청
-	            success: function(response) {
-	                likeCountElement.text(response.likeCount); // 최신 값 적용
-	            },
-	            error: function(xhr, status, error) {
-	                console.error('좋아요 처리 중 오류 발생:', error);
-	                likeCountElement.text(currentCount); // 실패 시 원래 값으로 복구
-	            }
-	        });
-	    });
-
-        $('#delete-button').on('click', function() {
-            if (confirm('정말로 이 레시피를 삭제하시겠습니까?')) {
-                $.ajax({
-                    url: `/api/v1/delete-recipe/${postId}`,
-                    type: 'DELETE',
-                    success: function(response) {
-                        alert(response.message);
-                        window.location.href = '/post/list';
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('삭제 처리 중 오류 발생:', error);
-                        alert('레시피 삭제에 실패했습니다.');
-                    }
-                });
-            }
-        });
-
-	});
-
-    function goBack() {
-        if (document.referrer && ( document.referrer.includes('/post/list') || document.referrer.includes('/user/myrecipe'))) {
-            window.history.back();
-        } else {
-            window.location.href = '/post/list';
-        }
-    }
-
-
-    $(document).ready(function() {
-        // 숨겨진 div에서 JSON 데이터 가져오기
-        const ingredientsJson = $('#ingredients-json').text();
-        const instructionsJson = $('#instructions-json').text();
-
-        const ingredients = JSON.parse(ingredientsJson);
-        const instructions = JSON.parse(instructionsJson);
-
-        // 재료 리스트 렌더링
-        ingredients.forEach(ingredient => {
-            $('#ingredient-list').append(`
-                <li class="list-group-item">
-                    ${ingredient.name} - ${ingredient.quantity}${ingredient.unit}
-                </li>
-            `);
-        });
-
-        // 조리 순서 렌더링
-        instructions.forEach((step, index) => {
-            // 이미지가 있는 경우와 없는 경우를 구분하여 처리
-            const imageSection = step.imageUrl
-                ? `<div class="col-md-4 text-center">
-                <img src="${step.imageUrl}" alt="Step Image" class="img-fluid rounded square-image">
-           </div>`
-                : '';
-
-            $('#instruction-list').append(`
-        <div class="row mb-4">
-            <!-- 텍스트 부분 -->
-            <div class="${step.imageUrl ? 'col-md-8' : 'col-md-12'}">
-                <h5 class="fw-bold">Step ${index + 1}</h5>
-                <p>${step.description}</p>
-            </div>
-
-            ${imageSection}
-        </div>
-    `);
-        });
-    });
-</script>
+<script src="/js/post-view.js"></script>
 </body>
 </html>
