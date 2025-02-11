@@ -79,21 +79,7 @@ public class UserApiController {
 	    return ResponseEntity.ok(response);
 	}
 	
-	@PutMapping("/mypage")
-	public ResponseEntity<?> updateUserInfo(
-	        @AuthenticationPrincipal PrincipalDetails userDetails, // 현재 로그인한 유저 정보 가져오기
-	        @RequestBody UserRequest userRequest) {  // 클라이언트에서 수정할 데이터 받기
-
-	    if (userDetails == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-	    }
-
-	    String username = userDetails.getUsername(); // 현재 로그인한 유저명
-	    UserResponse updatedUser = userService.updateUser(username, userRequest);
-
-	    return ResponseEntity.ok(updatedUser);
-	}
-
+	// 마이페이지 수정 기능 
 	
 	
 }
