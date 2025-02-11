@@ -49,6 +49,13 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+feature-frontend-register
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
+}
+
+
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-parameters")
 }
