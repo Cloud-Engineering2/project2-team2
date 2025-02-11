@@ -17,7 +17,7 @@
  <div class="form-signin w-100 m-auto">
 
         <h2>요리왕 비룡의 레시피🎈 </h2>
-        <form id="loginForm">
+        <form th:action="@{/user/login}" method="post">
             <div class="form-floating mb-3">
                 <label for="username">이름</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="이름을 입력해주세요" required>
@@ -40,7 +40,7 @@
     <script>
 
 
-        // 폼 제출 이벤트 처리
+      /*   // 폼 제출 이벤트 처리
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault(); // 기본 폼 제출 동작을 막음
 
@@ -87,7 +87,7 @@
                     console.error('로그인 요청 중 오류 발생:', error);
                     alert('로그인 요청 중 오류가 발생했습니다.');
                 });
-        });
+        }); */
     </script>
 
 <!-- Bootstrap 5 JavaScript Bundle (with Popper.js) -->

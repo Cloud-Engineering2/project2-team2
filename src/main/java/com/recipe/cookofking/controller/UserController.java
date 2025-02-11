@@ -2,25 +2,19 @@ package com.recipe.cookofking.controller;
 
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.recipe.cookofking.dto.UserDto;
-import com.recipe.cookofking.dto.request.UserRequest;
 import com.recipe.cookofking.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +39,54 @@ public class UserController {
 		
 	    return "user/login"; // 로그인 페이지로 이동
 	}
+	
+
+
+	@PostMapping("/user/login")
+	public String login(@RequestParam String username, 
+	                    @RequestParam String password, 
+	                    HttpServletRequest request, 
+	                    RedirectAttributes redirectAttributes) {
+	    try {
+	        UserDto userDto = userService.login(username, password);
+
+	        // ✅ 직접 세션에 유저 정보 저장
+	        HttpSession session = request.getSession();
+	        session.setAttribute("user", userDto);
+
+	        return "redirect:/user/mypage"; // 로그인 성공 시 마이페이지로 이동
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("error", "Invalid username or password");
+	        return "redirect:/user/login"; // 로그인 실패 시 다시 로그인 페이지로
+	    }
+	}
+	 @PostMapping("/user/logout")
+	    public String logout(HttpServletRequest request) {
+	        HttpSession session = request.getSession(false);
+	        if (session != null) {
+	            session.invalidate(); // 세션 무효화
+	        }
+	        return "redirect:/user/login";
+	    }
+	 
+
+	
+	
+	/* 회원가입 페이지 이동*/
+	@GetMapping("/register")
+	public String userregister() {
+		return "/user/register";
+	}
+	
+	@PostMapping("/register")
+	public String register(@ModelAttribute UserDto userDto) {
+		userService.registerUser(userDto);
+		return "redirect:/user/login";
+	}
+	
+	
+	
+	
 	
 //	/* 로그인 기능 */
 //	@PostMapping("/login")
@@ -82,15 +124,7 @@ public class UserController {
 //	                             .body(response);
 //	    }
 //	}
-	
-	
-	/* 회원가입 페이지 이동*/
-	@GetMapping("/register")
-	public String userregister() {
-		return "/user/register";
-	}
-	
-	
+	 
 	/* 회원가입 기능 */
 //	@PostMapping("/register")
 //	public String signup(@ModelAttribute UserRequest userRequest, RedirectAttributes redirectAttributes) {

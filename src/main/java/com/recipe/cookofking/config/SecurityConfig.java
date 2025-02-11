@@ -13,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.recipe.cookofking.config.jwt.JwtAuthenticationFilter;
-import com.recipe.cookofking.config.jwt.JwtAuthorizationFilter;
 import com.recipe.cookofking.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +29,8 @@ public class SecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class).build();
   }
 	
+	
+	
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        http
@@ -44,46 +44,42 @@ public class SecurityConfig {
 //    }
 	
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager ) throws Exception {
-	
-		http
-    	// 로그인 시 JWT 토큰 발급을 위한 필터 추가 (JwtAuthenticationFilter)
-    	.addFilter(new JwtAuthenticationFilter(authenticationManager))
-    	
-    	// 요청 시 JWT 토큰을 검증하는 필터 추가 (JwtAuthorizationFilter)
-    	.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository))
-    	
-    	.csrf(AbstractHttpConfigurer::disable)
-    	
-    	.sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    	
-    	.formLogin(AbstractHttpConfigurer::disable)
-        .httpBasic(AbstractHttpConfigurer::disable)
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	    http
+	        .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (필요시 활성화)
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers(
+	                "/user/login",
+	                "/user/register",
+	                "/js/**",
+	                "/css/**",
+	                "/images/**",
+	                "/static/**",
+	                "/post/list",
+	                "/post/view/**"
+	            ).permitAll()  // 인증 없이 접근 가능
+	            .requestMatchers("/post/edit/**", "/api/**").authenticated()  // 인증 필요
+	            .anyRequest().permitAll()
+	        )
+	        .sessionManagement(session -> session
+	            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
+	        )
+	        .formLogin(form -> form
+	            .loginPage("/user/login")  // 로그인 페이지 지정
+	            .loginProcessingUrl("/user/login") // 로그인 요청 처리 URL
+	            .defaultSuccessUrl("/post/write", true) // 로그인 성공 시 이동할 페이지
+	            .permitAll()
+	        )
+	        .logout(logout -> logout
+	            .logoutUrl("/user/logout") // 로그아웃 요청 URL
+	            .logoutSuccessUrl("/user/login") // 로그아웃 성공 시 이동할 페이지
+	            .invalidateHttpSession(true) // 세션 무효화
+	            .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제
+	            .permitAll()
+	        );
 
-		// 경로별 권한 설정
-		.authorizeHttpRequests(auth -> auth
-				.requestMatchers(
-						"/user/login",
-						"/user/register",
-						"/js/**",
-						"/css/**",
-						"/images/**",
-						"/static/**",
-						"/post/list",
-						"/post/view/**"
-				).permitAll()  // 로그인, 회원가입, 정적 리소스, 게시글 목록/보기는 인증 없이 접근 가능
-
-				.requestMatchers("/post/edit/**", "/api/**").authenticated()  // 게시글 수정과 API 경로는 인증 필요
-
-				.anyRequest().permitAll()  // 그 외 나머지 요청은 인증 없이 허용
-		);
-
-      
-		return http.build();
+	    return http.build();
 	}
-	
-	
     
     
     

@@ -62,6 +62,9 @@ public class UserDto implements Serializable {
     
  // UserDto를  엔티티로 변환하는 메소드
     public User toEntity() {
+    	if (this.role == null) {
+            this.role = "USER";  // 기본값 설정
+        }
         return new User( username, email, password, role, null, null);
     }
 

@@ -1,5 +1,5 @@
-package com.recipe.cookofking.config.jwt;
-
-public class JwtTokenProvider {
-
-}
+//package com.recipe.cookofking.config.jwt;
+//
+//public class JwtTokenProvider {
+//
+//}
