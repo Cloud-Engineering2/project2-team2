@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -205,18 +205,13 @@
             title: $('#recipeTitle').val(),
             content: $('#recipeDescription').val(),
             mainImageS3URL: $('#mainImageUrl').val(),
-
-            // 재료 정보 수집 후 문자열로 변환
-            ingredients: JSON.stringify(collectIngredients()),
-
-            // 요리 순서 수집 후 문자열로 변환
-            instructions: JSON.stringify(collectInstructions())
+            ingredients: JSON.stringify(collectIngredients()),  // 재료 정보
+            instructions: JSON.stringify(collectInstructions()) // 요리 순서
         };
 
         const validationData = {
-            mainImageId: $('#mainImageId').val(),
-            mainImageUrl: $('#mainImageUrl').val(),
-            stepImages: collectStepImageValidation()
+            mainImage: { imageUrl: $('#mainImageUrl').val(), imageId: $('#mainImageId').val() },
+            stepImages: collectStepImageValidation()  // 이미지 검증 데이터
         };
 
         const finalData = {
@@ -224,15 +219,25 @@
             validationData: validationData
         };
 
-        // JSON 데이터 전송
+
+        // JSON 데이터 전송 (Authorization 헤더 포함)
         $.ajax({
             url: '/api/v1/submit-recipe',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(finalData),
             success: function (response) {
-                alert(response);
-                window.location.href = '/recipes';  // 저장 후 리다이렉션
+                if (response.postId) {
+                    // postId로 상세 페이지 이동
+                    window.location.href = '/post/view/' + response.postId;
+                } else {
+                    alert('레시피 저장은 성공했지만, 게시글 ID를 받지 못했습니다.');
+                    window.location.href = '/post/list';  // 예외 처리: 목록으로 이동
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('레시피 저장 중 오류 발생:', error);
+                alert('레시피 저장에 실패했습니다.');
             }
         });
     });
@@ -257,7 +262,7 @@
             const description = $(this).find('.step-description').val();
             const imageUrl = $(this).find('.stepImageUrl').val();
 
-            instructions.push({ description, imageUrl });
+            instructions.push({ description,  imageUrl });
         });
         return instructions;
     }
@@ -269,7 +274,7 @@
             const imageId = $(this).find('.stepImageId').val();
             const imageUrl = $(this).find('.stepImageUrl').val();
 
-            stepImages.push({ imageId, imageUrl });
+            stepImages.push({ imageId: imageId, imageUrl: imageUrl });
         });
         return stepImages;
     }

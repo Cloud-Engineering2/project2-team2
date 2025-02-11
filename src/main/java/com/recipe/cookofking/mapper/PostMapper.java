@@ -16,6 +16,8 @@ public class PostMapper {
                 .ingredients(post.getIngredients())
                 .instructions(post.getInstructions())
                 .mainImageS3URL(post.getMainImageS3URL())
+                .viewCount(post.getViewCount())  // 추가
+                .likeCount(post.getLikeCount())  // 추가
                 .createdDate(post.getCreatedDate())
                 .modifiedDate(post.getModifiedDate())
                 .build();
@@ -33,6 +35,8 @@ public class PostMapper {
                 .ingredients(postDto.getIngredients())
                 .instructions(postDto.getInstructions())
                 .mainImageS3URL(postDto.getMainImageS3URL())
+                .viewCount(postDto.getViewCount())  // 추가
+                .likeCount(postDto.getLikeCount())  // 추가
                 .createdDate(postDto.getCreatedDate())
                 .modifiedDate(postDto.getModifiedDate())
                 .build();

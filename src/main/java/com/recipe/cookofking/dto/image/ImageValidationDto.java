@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,12 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ImageValidationDto {
-    private Integer mainImageId;
-    private String mainImageUrl;
-    private List<StepImageDto> stepImages;
+    private ImageInfoDto mainImage = new ImageInfoDto();  // 기본값 추가
+    private List<ImageInfoDto> stepImages = new ArrayList<>();
+    private List<String> orphanedUrls = new ArrayList<>();
 
     @Data
-    public static class StepImageDto {
+    public static class ImageInfoDto {
         private Integer imageId;
         private String imageUrl;
     }
