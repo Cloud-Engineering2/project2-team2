@@ -102,6 +102,34 @@ public class UserService {
 		return UserDto.fromEntity(user);
 	}
 	
+	
+	public boolean changePassword(String username, String currentPassword, String newPassword) {
+	    Optional<User> optionalUser = userRepository.findByUsername(username);
+
+	    if (optionalUser.isPresent()) {
+	        User existingUser = optionalUser.get();
+
+	        // 현재 비밀번호 확인
+	        if (passwordEncoder.matches(currentPassword, existingUser.getPassword())) {
+	            User updatedUser = User.builder()
+	                .id(existingUser.getId())
+	                .username(existingUser.getUsername())
+	                .email(existingUser.getEmail())
+	                .password(passwordEncoder.encode(newPassword))
+	                .role(existingUser.getRole())
+	                .createdDate(existingUser.getCreatedDate())
+	                .modifiedDate(LocalDateTime.now())
+	                .build();
+
+	            userRepository.save(updatedUser);
+	            return true;
+	        }
+	    }
+
+	    return false;
+	}
+
+
 
 
 }

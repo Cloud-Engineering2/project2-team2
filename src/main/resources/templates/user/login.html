@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Page</title>
-   
-	
+   <link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
 	<link href="/css/register.css" rel="stylesheet">
  
 </head>
 
 
-<body class="d-flex align-items-center py-4 bg-body-tertiary">
+<body class="d-flex align-items-center py-4 bg-body-tertiary p-3 bg-dark text-white">
 
  <div class="form-signin w-100 m-auto">
 
-        <h2>요리왕 비룡의 레시피🎈 </h2>
+        <h2>요리왕 비룡의 레시피🎈  </h2>
+        <h3>👋 로그인 하기</h3>
         <form th:action="@{/user/login}" method="post">
             <div class="form-floating mb-3">
                 <label for="username">이름</label>
@@ -25,9 +27,10 @@
                 <label for="password">비밀번호</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력해주세요.">
             </div>
-            <button class="btn btn-primary w-100 py-2 mt-5" type="submit">로그인</button>
+            <button class="btn w-100 py-2 mt-5 btn btn-outline-light" type="submit">로그인</button>
         </form>
-         <p class="btn btn-secondary btn-md mt-5"><a href="/user/register" class="text-secondary-emphasis text-light">회원가입</a></p>
+        <button class="btn w-100 py-2 mt-3 btn btn-outline-light" type="button" onclick="location.href='/user/register'">회원가입</button>
+
 
 </div>
 

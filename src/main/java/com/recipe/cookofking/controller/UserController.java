@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.dto.UserDto;
+import com.recipe.cookofking.dto.request.ChangePasswordRequest;
 import com.recipe.cookofking.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,7 +86,7 @@ public class UserController {
 	}
 
 	
-	// 이메일로
+	// 이메일 변경
 	@PutMapping("/mypage/update")
 	public ResponseEntity<?> updateUserEmail(@RequestBody UserDto userDto, Authentication authentication) {
 	    if (authentication == null) {
@@ -107,6 +109,24 @@ public class UserController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 업데이트 실패: " + e.getMessage());
 	    }
 	}
+	
+	
+	@PutMapping("/mypage/changePassword")
+    @ResponseBody
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        // 비밀번호 변경 로직 수행
+        boolean isPasswordChanged = userService.changePassword(changePasswordRequest.getUsername(),
+                                                              changePasswordRequest.getCurrentPassword(),
+                                                              changePasswordRequest.getNewPassword());
+
+        if (isPasswordChanged) {
+            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body("현재 비밀번호가 일치하지 않거나 다른 오류가 발생했습니다.");
+        }
+    }
+	
 
 	
 	/* 로그인 페이지 */
