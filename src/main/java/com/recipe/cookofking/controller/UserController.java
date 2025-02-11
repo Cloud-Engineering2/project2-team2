@@ -1,6 +1,7 @@
 package com.recipe.cookofking.controller;
 
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,14 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.recipe.cookofking.dto.UserDto;
 import com.recipe.cookofking.dto.request.UserRequest;
@@ -32,6 +32,12 @@ public class UserController {
 	
 	private final UserService userService;
 
+	@GetMapping("/mypage")
+	public String myPage() {
+		return "user/mypage";
+	}
+
+	
 	/* 로그인 페이지 */
 	@GetMapping("/login")
 	public String login( ) {
@@ -87,7 +93,7 @@ public class UserController {
 	
 	/* 회원가입 기능 */
 	@PostMapping("/register")
-	public String signup(@ModelAttribute UserRequest userRequest, Model model) {
+	public String signup(@ModelAttribute UserRequest userRequest, RedirectAttributes redirectAttributes) {
 		try {
 		
 			// UserRequest를 UserDto로 변환
@@ -97,21 +103,20 @@ public class UserController {
 			log.info("회원가입에서 입력한 값 : " + userRequest); // 로그 추가
 			log.info("디비에저장되는값 : " + userDto); // 로그 추가
 			
+			//회원가입 성공 메시지 전달
+			redirectAttributes.addFlashAttribute("successMessage", "회원가입이 완료되었습니다. 로그인해주세요.");
 			return "redirect:/user/login";
 			
 		}catch(IllegalArgumentException e) {
-			model.addAttribute("errorMessage", e.getMessage());  // 중복 아이디 메시지
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());  // 중복 아이디 메시지
 	        return "/user/register";  // 회원가입 페이지로 돌아감
 		}catch(Exception e) {
 			 System.out.println("회원가입 오류: " + 	e.getMessage()); 
-			 model.addAttribute("errorMessage", "회원가입에 실패했습니다: " + e.getMessage());
+			 redirectAttributes.addFlashAttribute("errorMessage", "회원가입에 실패했습니다: " + e.getMessage());
 		        return "/user/register"; // 오류 발생 시 회원가입 페이지로 복귀
 		}
 	}
 	
-	@GetMapping("/mypage")
-	public String myPage() {
-		return "user/mypage";
-	}
+	
 	
 }

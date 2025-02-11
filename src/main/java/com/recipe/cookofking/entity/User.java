@@ -53,5 +53,12 @@ public class User {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
+    
+ // ⭐ 업데이트 전용 메서드 추가
+    public void updateUser(String username, String email) {
+        this.username = username;
+        this.email = email;
+        this.modifiedDate = LocalDateTime.now(); // 수정 날짜 갱신
+    }
 
 }

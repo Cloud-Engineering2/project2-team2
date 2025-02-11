@@ -60,13 +60,25 @@ public class SecurityConfig {
     	
     	.formLogin(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
-    	
-        // 경로별 권한 설정
-        .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**","/**", "/login","/register","/js/**", "/css/**", "/images/**", "/static/**").permitAll() // 로그인 경로는 인증 없이 접근 가능
-                //.requestMatchers("/api/mypage").authenticated() // 인증필요시
-                //.requestMatchers("/admin/**").hasRole("ADMIN") // 예시: admin 권한이 필요한 경로
-                .anyRequest().authenticated()); // 다른 모든 요청은 인증 필요
+
+		// 경로별 권한 설정
+		.authorizeHttpRequests(auth -> auth
+				.requestMatchers(
+						"/user/login",
+						"/user/register",
+						"/js/**",
+						"/css/**",
+						"/images/**",
+						"/static/**",
+						"/post/list",
+						"/post/view/**"
+				).permitAll()  // 로그인, 회원가입, 정적 리소스, 게시글 목록/보기는 인증 없이 접근 가능
+
+				.requestMatchers("/post/edit/**", "/api/**").authenticated()  // 게시글 수정과 API 경로는 인증 필요
+
+				.anyRequest().permitAll()  // 그 외 나머지 요청은 인증 없이 허용
+		);
+
       
 		return http.build();
 	}

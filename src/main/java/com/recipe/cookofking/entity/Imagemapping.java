@@ -39,4 +39,12 @@ public class Imagemapping {
     public void markAsPermanent() {
         this.isTemp = false;
     }
+    public void unmarkAsPermanent() {
+        this.isTemp = true;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
 }

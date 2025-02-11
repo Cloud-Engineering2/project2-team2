@@ -1,21 +1,22 @@
 package com.recipe.cookofking.service;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-
 import com.recipe.cookofking.config.jwt.JwtProperties;
 import com.recipe.cookofking.dto.UserDto;
+import com.recipe.cookofking.dto.request.UserRequest;
+
 import com.recipe.cookofking.entity.User;
 import com.recipe.cookofking.repository.UserRepository;
-
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class UserService {
 	
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	
 	private final AuthenticationManager authenticationManager;
 	
 	// 사용자 인증 후 JWT 토큰 발급
@@ -44,7 +46,7 @@ public class UserService {
         String jwtToken = JWT.create()
             .withSubject(authentication.getName())  // 사용자 이름
             .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))  // 만료 시간
-            .withClaim("uid", userDto.getUsername())  // 추가적인 claim, 예: 사용자 ID
+            .withClaim("username", userDto.getUsername())  // 추가적인 claim, 예: 사용자 ID
             .sign(Algorithm.HMAC512(JwtProperties.SECRET));  // 비밀 키로 서명
 
         return jwtToken;
@@ -67,8 +69,19 @@ public class UserService {
 		userRepository.save(user);
 		
 	}
+
 	
 	
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username)
+				.orElseThrow(()-> new UsernameNotFoundException("user"));
+	}
+	public UserDto findUserByUsername(String username) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+		return UserDto.fromEntity(user);
+	}
 	
+
 
 }
