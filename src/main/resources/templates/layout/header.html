@@ -14,27 +14,29 @@
                 <li><a  href="/" class="nav-link px-2 text-secondary">요리왕 비룡 </a></li>
             </ul>
 	
-	<div class="text-end">
-    	<span id="username" class="text-white me-2"></span>
+    <div class="text-end">
+        <!-- 로그인된 사용자의 이름을 표시 -->
+        <span id="username" class="text-white me-2" sec:authentication="principal.username"></span>
     
-    <!-- 로그인/로그아웃 & 마이페이지 버튼 -->
-    <a href="/user/login" role="button" id="login" class="btn btn-outline-light me-2">로그인</a>
-    <a href="/user/register" role="button" id="register" class="btn btn-outline-light me-2">회원가입</a>
-    
-	 <button class="btn btn-outline-light me-2"  id="mypage" onclick="getUserInfo()">My Page</button>
-
-	 <a href="/user/logout" role="button" id="logout" class="btn btn-outline-light me-2" style="display: none;">Logout</a>
-</div>
+        <!-- 로그인된 경우 마이페이지 및 로그아웃 버튼, 그렇지 않으면 로그인 및 회원가입 버튼 -->
+        <div sec:authorize="isAuthenticated()">
+            <button class="btn btn-outline-light me-2" id="mypage">My Page</button>
+            <a href="/user/logout" role="button" id="logout" class="btn btn-outline-light me-2">Logout</a>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <a href="/user/login" role="button" id="login" class="btn btn-outline-light me-2">로그인</a>
+            <a href="/user/register" role="button" id="register" class="btn btn-outline-light me-2">회원가입</a>
         </div>
     </div>
-  
-</header>
- </th:block> 
-    
+        </div>
+    </div>
+  </header>
+</th:block> 
+
 </body>
 
 <script>
-
+  // JavaScript 코드 필요 시 추가
 </script>
 
 </html>

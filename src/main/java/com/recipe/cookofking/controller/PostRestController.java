@@ -3,7 +3,6 @@ package com.recipe.cookofking.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.recipe.cookofking.config.jwt.JwtProperties;
 import com.recipe.cookofking.dto.UserDto;
 import com.recipe.cookofking.dto.image.ImageValidationDto;
 import com.recipe.cookofking.dto.post.RecipeSubmissionDto;
