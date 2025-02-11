@@ -162,49 +162,54 @@ header .text-end span {
 /****************************************************************************/
 /* post-view 페이지 css */
 /****************************************************************************/
-    .post-view .image-container {
-        position: relative;
-        width: 100%;
-        height: 400px; /* 원하는 높이로 설정 */
-        overflow: hidden;
-        background-color: #f8f9fa; /* 이미지가 없는 경우 대비 */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+.post-view .image-container {
+    position: relative;
+    width: 100%;
+    height: 400px; /* 원하는 높이로 설정 */
+    overflow: hidden;
+    background-color: #f8f9fa; /* 이미지가 없는 경우 대비 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .post-view .cropped-image {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        min-height: 100%;
-        min-width: 100%;
-        object-fit: cover; /* 이미지 비율 유지하면서 컨테이너 채우기 */
-    }
-    /* 제목 스타일 */
-    .post-view .card-title {
-        font-size: 2rem; /* 제목 크기 */
-        font-weight: bold; /* 굵은 글씨 */
-        color: #333333; /* 어두운 회색 톤 */
-        margin-bottom: 1rem; /* 제목과 콘텐츠 간 간격 */
-    }
+.post-view .cropped-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-height: 100%;
+    min-width: 100%;
+    object-fit: cover; /* 이미지 비율 유지하면서 컨테이너 채우기 */
+}
+/* 제목 스타일 */
+.post-view .card-title {
+    font-size: 2rem; /* 제목 크기 */
+    font-weight: bold; /* 굵은 글씨 */
+    color: #333333; /* 어두운 회색 톤 */
+    margin-bottom: 1rem; /* 제목과 콘텐츠 간 간격 */
+}
 
-    /* 콘텐츠 스타일 */
-    .post-view .card-content {
-        font-size: 1rem; /* 기본 텍스트 크기 */
-        line-height: 1.8; /* 줄 간격 */
-        color: #AAAAAA; /* 약간 밝은 회색 톤 */
-        margin-bottom: 1rem; /* 아래 여백 */
-    }
+/* 콘텐츠 스타일 */
+.post-view .card-content {
+    font-size: 1rem; /* 기본 텍스트 크기 */
+    line-height: 1.8; /* 줄 간격 */
+    color: #AAAAAA; /* 약간 밝은 회색 톤 */
+    margin-bottom: 1rem; /* 아래 여백 */
+}
 
-    .post-view .square-image {
-        width: 100%;
-        aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
-        object-fit: cover;   /* 넘치는 부분 자르기 */
-        object-position: center; /* 중앙 정렬 */
-    }
+.post-view .square-image {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+    object-fit: cover;   /* 넘치는 부분 자르기 */
+    object-position: center; /* 중앙 정렬 */
+}
 
+.post-view .created-date {
+    font-size: 0.9rem;
+    color: #888888;
+    margin-bottom: 1rem;
+}
 /****************************************************************************/
 /* posts 페이지 css */
 /****************************************************************************/

@@ -42,6 +42,10 @@
                                     </span>
                                     <span class="views">조회수: <span th:text="${post.viewCount}">0</span></span>
                                 </div>
+                                <!-- 작성일 표시 -->
+                                <div class="text-muted small mb-3 text-right">
+                                    작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</span>
+                                </div>
                                 <!-- 수정 버튼 (작성자만 보이도록 설정) -->
                                 <div class="text-right mb-3" th:if="${isPostOwner}">
                                     <a th:href="@{'/post/edit/' + ${post.id}}" class="btn btn-primary btn-sm">수정하기</a>
