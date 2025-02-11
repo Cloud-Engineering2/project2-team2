@@ -54,12 +54,12 @@ public class LikeService {
 
 
 
-    @Transactional
-    public int getLikeCount(Integer postId) {
-    	Post post = postRepository.findById(postId).orElseThrow(() -> 
-    	new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. postId: " + postId));
-    	
-        // ✅ 게시글의 좋아요 수 반환
-        return likeRepository.countByPost(post);
-    }
+//    @Transactional
+//    public int getLikeCount(Integer postId) {
+//    	Post post = postRepository.findById(postId).orElseThrow(() ->
+//    	new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. postId: " + postId));
+//
+//        // ✅ 게시글의 좋아요 수 반환
+//        return likeRepository.countByPost(post);
+//    }
 }
