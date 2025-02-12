@@ -59,6 +59,7 @@ jobs:
             docker push $REGISTRY_URI:$IMAGE_TAG
 
   argocd:
+    environment: aws-eks-test
     needs: ci
     runs-on: ubuntu-latest
 
