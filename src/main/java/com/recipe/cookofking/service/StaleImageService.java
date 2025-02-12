@@ -24,7 +24,7 @@ public class StaleImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String s3BucketName;
 
-    @Value("${cloud.aws.region.static")
+    @Value("${cloud.aws.region.static}")
     private String region;
 
     /**
@@ -33,8 +33,7 @@ public class StaleImageService {
      * isTemp 상태인 이미지 검색 후
      * db와 S3에서 삭제
      */
-//    @Scheduled(cron = "0 0 3 * * *")  // 새벽 3시에 (03:00)에 실행
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 3 * * *")  // 새벽 3시에 (03:00)에 실행
     @Transactional
     public void cleanupStaleImages() {
 
@@ -42,7 +41,6 @@ public class StaleImageService {
 
         // 1. 특정 조건을 만족하는 데이터 조회
         LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusHours(24L);
-        log.info(twentyFourHoursAgo.toString());
 
         List<Imagemapping> staleImages = imagemappingRepository.findStaleImages(twentyFourHoursAgo);
 
@@ -53,25 +51,23 @@ public class StaleImageService {
         }
 
         String prefix = "https://" + s3BucketName + ".s3." + region + ".amazonaws.com/";
-        log.info(prefix);
 
         for (Imagemapping image : staleImages) {
             try {
                 // 2. S3에서 파일 삭제
                 String s3Key = image.getS3Url().replace(prefix, ""); // 예: "folder/example.png"
-                log.info(s3Key);
 
                 DeleteObjectRequest request = DeleteObjectRequest.builder()
                         .bucket(s3BucketName)
                         .key(s3Key)
                         .build();
 
-//                s3Client.deleteObject(request);
+                s3Client.deleteObject(request);
 
                 log.info("Deleted S3 object: {}", s3Key);
 
                 // 3. DB에서 관련 데이터 삭제
-//                imagemappingRepository.deleteById(image.getId());
+                imagemappingRepository.deleteById(image.getId());
 
             } catch (Exception e) {
                 log.error("Error deleting image: {}", image.getId(), e);
