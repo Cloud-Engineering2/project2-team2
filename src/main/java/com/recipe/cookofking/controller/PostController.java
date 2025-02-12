@@ -43,10 +43,12 @@ public class PostController {
         model.addAttribute("post", postViewDto);  // 게시글 정보 추가
 
         boolean isPostOwner = false;
+
         boolean hasLiked = false;
         if (principalDetails != null) {
             String currentUsername = principalDetails.getUsername();
             Integer userId = principalDetails.getUser().getId();
+
             if (postViewDto.getUsername() != null && postViewDto.getUsername().equals(currentUsername)) {
                 isPostOwner = true;
             }

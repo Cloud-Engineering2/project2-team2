@@ -61,7 +61,6 @@
                                         ❤️ 스크랩
                                     </button>
 
-
                                     <!-- 좋아요 수 표시 -->
                                     <p class="mt-2 mb-0 text-muted small">
                                         좋아요 수: <span id="like-count" th:text="${post.likeCount}">0</span>
@@ -101,6 +100,8 @@
 <!-- 숨겨진 div로 JSON 데이터를 저장 -->
 <div id="ingredients-json" th:utext="${post.ingredients}" style="display:none;"></div>
 <div id="instructions-json" th:utext="${post.instructions}" style="display:none;"></div>
+
 <script src="/js/post-view.js"></script>
+
 </body>
 </html>
