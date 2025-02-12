@@ -51,6 +51,9 @@ metadata:
     # ALB 그룹 설정
     alb.ingress.kubernetes.io/group.name: "project2"
 
+    #phc 수정사항
+    alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=3600
+
     # 리소스 자동 할당
     kubernetes.io/ingress.class: alb
 spec:
