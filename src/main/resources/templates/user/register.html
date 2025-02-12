@@ -8,59 +8,58 @@
 <link
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="/css/register.css" rel="stylesheet">
-
+	<link href="/css/common.css" rel="stylesheet">
 </head>
 
-<body class="d-flex align-items-center py-4 bg-body-tertiary">
+<body class="bg-light">
+<div th:replace="~{layout/header :: header}">Header</div>
+<div class="container mt-3 mb-3 login">
+	<div class="row justify-content-center">
+		<div class="col-md-12">
+
+			<div class="form-signin w-400 m-auto">
+				<br>
+				<h2>요리왕 비룡의 레시피🎈  </h2>
+				<h3>✔ 회원가입️</h3>
+
+				<!-- 성공 메시지 출력 -->
+				<div th:if="${successMessage}" class="alert alert-success">
+					<span th:text="${successMessage}"></span>
+				</div>
 
 
-	<div class="form-signin w-100 m-auto">
+				<!-- errorMessage를 표시하기 위해 th:text 사용 -->
+				<div class="mt-2" th:if="${errorMessage}" style="color: red;">
+					<p th:text="${errorMessage}"></p>
+				</div>
 
 
-		<h3 class="h3 mb-3 fw-normal">✔ 회원가입️</h3>
+					<form th:action="@{/user/register}" method="post">
 
-		<!-- 성공 메시지 출력 -->
-		<div th:if="${successMessage}" class="alert alert-success">
-			<span th:text="${successMessage}"></span>
+						<div class="form-floating mb-3">
+							<label for="username">이름</label> <input type="text"
+																	class="form-control" id="username" name="username"
+																	placeholder="이름을 입력해주세요" required>
+						</div>
+
+						<div class="form-floating mb-3">
+							<label for="password">비밀번호</label> <input type="password"
+																	  class="form-control" id="password" name="password"
+																	  placeholder="비밀번호를 입력해주세요.">
+
+						</div>
+
+						<div class="form-floating">
+							<label for="email">이메일</label> <input type="email"
+																  class="form-control" id="email" name="email"
+																  placeholder="이메일을 입력해주세요." required>
+						</div>
+						<button class="btn btn-primary w-100 py-2 mt-5" type="submit">회원가입</button>
+					</form>
+			</div>
 		</div>
-
-		<!-- errorMessage를 표시하기 위해 th:text 사용 -->
-		<div class="mt-2" th:if="${errorMessage}" style="color: red;">
-			<p th:text="${errorMessage}"></p>
-		</div>
-
-
-		<form th:action="@{/user/register}" method="post">
-
-			<div class="form-floating mb-3">
-				<label for="username">이름</label> <input type="text"
-					class="form-control" id="username" name="username"
-					placeholder="이름을 입력해주세요" required>
-			</div>
-
-			<div class="form-floating mb-3">
-				<label for="password">비밀번호</label> <input type="password"
-					class="form-control" id="password" name="password"
-					placeholder="비밀번호를 입력해주세요.">
-
-			</div>
-
-			<div class="form-floating">
-				<label for="email">이메일</label> <input type="email"
-					class="form-control" id="email" name="email"
-					placeholder="이메일을 입력해주세요." required>
-			</div>
-
-
-
-			<button class="btn btn-primary w-100 py-2 mt-5" type="submit">회원가입</button>
-
-
-
-		</form>
-
 	</div>
+</div>
 
 
 	<script>
@@ -80,6 +79,6 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<div th:replace="~{layout/footer :: footer}">Footer</div>
 </body>
 </html>

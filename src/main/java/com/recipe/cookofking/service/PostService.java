@@ -4,6 +4,7 @@ import com.recipe.cookofking.dto.post.PostViewDto;
 import com.recipe.cookofking.entity.Post;
 import com.recipe.cookofking.entity.User;
 import com.recipe.cookofking.mapper.PostMapper;
+import com.recipe.cookofking.repository.LikeRepository;
 import com.recipe.cookofking.repository.PostRepository;
 import com.recipe.cookofking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
+    private final LikeRepository likeRepository;
     @Transactional
     public Integer savePost(PostDto postDto) {
         // 1. DB에서 User 엔티티 조회
@@ -97,6 +98,24 @@ public class PostService {
 
     public Page<PostDto> getPostList(Pageable pageable) {
         return postRepository.findAll(pageable).map(PostMapper::toDto);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<PostDto> getMyPostList(Pageable pageable, Integer userId) {
+        return postRepository.findByUserId(userId, pageable)
+                .map(PostMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasUserLikedPost(Integer postId, Integer userId) {
+        return likeRepository.findByPostIdAndUserId(postId, userId).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostDto> getMyScrapList(Pageable pageable, Integer userId) {
+        return likeRepository.findPostsByUserId(userId, pageable)
+                .map(PostMapper::toDto);
     }
 
     @Transactional

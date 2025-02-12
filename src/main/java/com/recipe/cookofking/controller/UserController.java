@@ -3,7 +3,15 @@ package com.recipe.cookofking.controller;
 
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import com.recipe.cookofking.dto.post.PostDto;
+import com.recipe.cookofking.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,15 +19,11 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.dto.UserDto;
+import com.recipe.cookofking.dto.request.ChangePasswordRequest;
 import com.recipe.cookofking.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,11 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 	
 	private final UserService userService;
+	private final PostService postService;
 
-//	@GetMapping("/mypage")
-//	public String myPage() {
-//		return "user/mypage";
-//	}
 	
 	@GetMapping("/mypage/checkSession")
 	public ResponseEntity<?> checkSession() {
@@ -87,6 +88,7 @@ public class UserController {
 	}
 
 	
+	// 이메일 변경
 	@PutMapping("/mypage/update")
 	public ResponseEntity<?> updateUserEmail(@RequestBody UserDto userDto, Authentication authentication) {
 	    if (authentication == null) {
@@ -108,6 +110,108 @@ public class UserController {
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 업데이트 실패: " + e.getMessage());
 	    }
+	}
+	
+	
+	@PutMapping("/mypage/changePassword")
+    @ResponseBody
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        // 비밀번호 변경 로직 수행
+        boolean isPasswordChanged = userService.changePassword(changePasswordRequest.getUsername(),
+                                                              changePasswordRequest.getCurrentPassword(),
+                                                              changePasswordRequest.getNewPassword());
+
+        if (isPasswordChanged) {
+            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body("현재 비밀번호가 일치하지 않거나 다른 오류가 발생했습니다.");
+        }
+    }
+
+
+	/* 내 레시피 페이지 */
+	@GetMapping("/myrecipe")
+	public String getMyPostList(Authentication authentication, Model model,
+							  @RequestParam(defaultValue = "1") int page,
+							  @RequestParam(defaultValue = "20") int size,
+							  @RequestParam(defaultValue = "latest") String sort) {
+
+
+		if (authentication == null) {
+			return "redirect:/user/login"; // 로그인 페이지로 리다이렉트
+		}
+
+		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		Integer userId = userDetails.getUserDto().getId();
+
+
+		// 페이지 번호를 0부터 시작하도록 조정
+		int adjustedPage = (page > 0) ? page - 1 : 0;
+
+		// 정렬 기준 설정
+		Sort sortOrder = getSortOrder(sort);
+		PageRequest pageRequest = PageRequest.of(adjustedPage, size, sortOrder);
+
+		// 서비스 호출
+		Page<PostDto> postPage = postService.getMyPostList(pageRequest, userId);
+
+
+		// 모델에 데이터 추가
+		model.addAttribute("postPage", postPage);
+		model.addAttribute("totalPosts", postPage.getTotalElements());
+		model.addAttribute("currentSort", sort);
+		model.addAttribute("currentPage", page);  // 현재 페이지를 모델에 추가 (1부터 시작)
+
+		return "user/myrecipe";  // posts.html로 렌더링
+	}
+
+
+	/* 내 레시피 페이지 */
+	@GetMapping("/myscrap")
+	public String getMyScrapList(Authentication authentication, Model model,
+								@RequestParam(defaultValue = "1") int page,
+								@RequestParam(defaultValue = "20") int size,
+								@RequestParam(defaultValue = "latest") String sort) {
+
+
+		if (authentication == null) {
+			return "redirect:/user/login"; // 로그인 페이지로 리다이렉트
+		}
+
+		PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
+		Integer userId = userDetails.getUserDto().getId();
+
+
+		// 페이지 번호를 0부터 시작하도록 조정
+		int adjustedPage = (page > 0) ? page - 1 : 0;
+
+		// 정렬 기준 설정
+		Sort sortOrder = getSortOrder(sort);
+		PageRequest pageRequest = PageRequest.of(adjustedPage, size, sortOrder);
+
+		// 스크랩한 게시글 조회
+		Page<PostDto> postPage = postService.getMyScrapList(pageRequest, userId);
+
+		// 모델에 데이터 추가
+		model.addAttribute("postPage", postPage);
+		model.addAttribute("totalPosts", postPage.getTotalElements());
+		model.addAttribute("currentSort", sort);
+		model.addAttribute("currentPage", page);  // 현재 페이지를 모델에 추가 (1부터 시작)
+
+		return "user/myscrap";  // posts.html로 렌더링
+	}
+
+	// 정렬 기준에 따라 Sort 객체 반환
+	private Sort getSortOrder(String sort) {
+		switch (sort) {
+			case "views":
+				return Sort.by(Sort.Direction.DESC, "viewCount");  // 조회수 기준 정렬
+			case "likes":
+				return Sort.by(Sort.Direction.DESC, "likeCount");  // 좋아요 기준 정렬
+			default:
+				return Sort.by(Sort.Direction.DESC, "createdDate");  // 기본값: 최신순 정렬
+		}
 	}
 
 	
@@ -138,6 +242,7 @@ public class UserController {
 //	        return "redirect:/user/login"; // 로그인 실패 시 다시 로그인 페이지로
 //	    }
 //	}
+	
 	 @PostMapping("/user/logout")
 	    public String logout(HttpServletRequest request) {
 	        HttpSession session = request.getSession(false);

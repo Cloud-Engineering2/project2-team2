@@ -1,6 +1,9 @@
 package com.recipe.cookofking.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,15 +13,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Configuration
@@ -61,16 +69,38 @@ public class SecurityConfig {
 	                "/post/list",
 	                "/post/view/**"
 	            ).permitAll()  // 인증 없이 접근 가능
-	            .requestMatchers("/post/edit/**", "/api/**").authenticated()  // 인증 필요
+	            .requestMatchers("/post/write","/post/edit/**","/user/mypage","/user/myrecipe", "/api/**").authenticated()  // 인증 필요
 	            .anyRequest().permitAll()
 	        )
+			.exceptionHandling(exception ->
+					exception.authenticationEntryPoint((request, response, authException) -> {
+						String uri = request.getRequestURI();
+
+						if (uri.startsWith("/api/")) {
+							// API 요청인 경우: JSON 응답
+							response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 401 상태 코드 설정
+							response.setContentType("application/json; charset=UTF-8");
+							response.getWriter().write(new ObjectMapper().writeValueAsString(
+									Map.of("error", "로그인이 필요한 서비스입니다.")
+							));
+						} else {
+							// 페이지 요청인 경우: 로그인 페이지로 리디렉션
+							response.sendRedirect("/user/login");
+						}
+					})
+			)
+
+
 	        .sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요시 세션 생성
+	        )
+	        .securityContext(securityContext -> securityContext
+	                .securityContextRepository(new HttpSessionSecurityContextRepository()) // 세션에 인증 정보를 저장
 	        )
 	        .formLogin(form -> form
 	            .loginPage("/user/login")  // 로그인 페이지 지정
 	            .loginProcessingUrl("/user/login") // 로그인 요청 처리 URL
-	            .defaultSuccessUrl("/post/write", true) // 로그인 성공 시 이동할 페이지
+	            .defaultSuccessUrl("/post/list", true) // 로그인 성공 시 이동할 페이지
 	            .permitAll()
 	        )
 	        .logout(logout -> logout

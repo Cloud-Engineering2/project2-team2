@@ -6,58 +6,14 @@
     <title>레시피 등록</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <style>
-        .image-upload {
-            display: flex;
-            align-items: flex-start;
-        }
-        .image-upload .form-control, .image-upload textarea {
-            flex: 3;
-            height: 100%;
-        }
-        .image-upload .upload-btn {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px dashed #ccc;
-            background-color: #f8f9fa;
-            cursor: pointer;
-            width: 150px;
-            height: 150px;
-            margin-left: 15px;
-            position: relative;
-        }
-        .image-upload .upload-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .image-upload .upload-btn input[type='file'] {
-            display: none;
-        }
-        .image-upload .upload-btn::before {
-            content: '+';
-            font-size: 2rem;
-            color: #ccc;
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
-        .image-upload .upload-btn img + ::before {
-            display: none;
-        }
-    </style>
+    <link href="/css/common.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 <div th:replace="~{layout/header :: header}">Header</div>
 <!-- 전체 레이아웃을 감싸는 컨테이너 -->
-<div class="container mt-5 mb-5">
+<div class="container mt-3 mb-1 post-write">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
 
             <!-- 카드 스타일로 폼 감싸기 -->
             <div class="card shadow-sm">
@@ -146,184 +102,10 @@
     </div>
 </div>
 
-<script>
-    // 메인 이미지 업로드
-    $(document).on('change', '.recipe-image', function () {
-        const file = this.files[0];
-        const preview = $(this).siblings('.preview-image');
 
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            $.ajax({
-                url: '/api/v1/upload-image',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    preview.attr('src', response.s3Url).removeClass('d-none');
-                    $('#mainImageId').val(response.id);
-                    $('#mainImageUrl').val(response.s3Url);
-                }
-            });
-        }
-    });
-
-    // 조리 순서 이미지 업로드
-    $(document).on('change', '.step-image', function () {
-        const file = this.files[0];
-        const preview = $(this).siblings('.preview-image');
-        const hiddenUrlInput = $(this).siblings('.stepImageUrl');
-        const hiddenIdInput = $(this).siblings('.stepImageId');
-
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            $.ajax({
-                url: '/api/v1/upload-image',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    preview.attr('src', response.s3Url).removeClass('d-none');
-                    hiddenUrlInput.val(response.s3Url);
-                    hiddenIdInput.val(response.id);
-                }
-            });
-        }
-    });
-
-    // 폼 제출 시 JSON 데이터로 전송
-    $('#recipeForm').submit(function (e) {
-        e.preventDefault();
-
-        const recipeData = {
-            title: $('#recipeTitle').val(),
-            content: $('#recipeDescription').val(),
-            mainImageS3URL: $('#mainImageUrl').val(),
-            ingredients: JSON.stringify(collectIngredients()),  // 재료 정보
-            instructions: JSON.stringify(collectInstructions()) // 요리 순서
-        };
-
-        const validationData = {
-            mainImage: { imageUrl: $('#mainImageUrl').val(), imageId: $('#mainImageId').val() },
-            stepImages: collectStepImageValidation()  // 이미지 검증 데이터
-        };
-
-        const finalData = {
-            recipeData: recipeData,
-            validationData: validationData
-        };
-
-
-        // JSON 데이터 전송 (Authorization 헤더 포함)
-        $.ajax({
-            url: '/api/v1/submit-recipe',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(finalData),
-            success: function (response) {
-                if (response.postId) {
-                    // postId로 상세 페이지 이동
-                    window.location.href = '/post/view/' + response.postId;
-                } else {
-                    alert('레시피 저장은 성공했지만, 게시글 ID를 받지 못했습니다.');
-                    window.location.href = '/post/list';  // 예외 처리: 목록으로 이동
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('레시피 저장 중 오류 발생:', error);
-                alert('레시피 저장에 실패했습니다.');
-            }
-        });
-    });
-
-    // 재료 정보 수집 함수
-    function collectIngredients() {
-        const ingredients = [];
-        $('.ingredient-row').each(function () {
-            const name = $(this).find('.ingredient-name').val();
-            const quantity = $(this).find('.ingredient-quantity').val();
-            const unit = $(this).find('.ingredient-unit').val();
-
-            ingredients.push({ name, quantity, unit });
-        });
-        return ingredients;
-    }
-
-    // 요리 순서 수집 함수
-    function collectInstructions() {
-        const instructions = [];
-        $('.step-row').each(function () {
-            const description = $(this).find('.step-description').val();
-            const imageUrl = $(this).find('.stepImageUrl').val();
-
-            instructions.push({ description,  imageUrl });
-        });
-        return instructions;
-    }
-
-    // 이미지 검증 데이터 수집 함수
-    function collectStepImageValidation() {
-        const stepImages = [];
-        $('.step-row').each(function () {
-            const imageId = $(this).find('.stepImageId').val();
-            const imageUrl = $(this).find('.stepImageUrl').val();
-
-            stepImages.push({ imageId: imageId, imageUrl: imageUrl });
-        });
-        return stepImages;
-    }
-
-    // 재료 추가 및 삭제 기능
-    $(document).ready(function () {
-        $('#add-ingredient').click(function () {
-            const newRow = `
-                <div class="form-row ingredient-row mb-2">
-                    <div class="col">
-                        <input type="text" class="form-control ingredient-name" placeholder="재료명">
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control ingredient-quantity" placeholder="수량">
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control ingredient-unit" placeholder="단위">
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-danger remove-btn">&times;</button>
-                    </div>
-                </div>`;
-            $('#ingredient-container').append(newRow);
-        });
-
-        $(document).on('click', '.remove-btn', function () {
-            $(this).closest('.ingredient-row').remove();
-        });
-
-        // 요리 순서 추가 기능
-        $('#add-step').click(function () {
-            const stepCount = $('.step-row').length + 1;
-            const newStep = `
-            <div class="form-group step-row mb-4">
-                <label>Step ${stepCount}</label>
-                <div class="image-upload">
-                    <textarea class="form-control step-description mb-2" placeholder="예) 다음 요리 단계를 입력해주세요."></textarea>
-                    <label class="upload-btn">
-                        <input type="file" class="step-image" accept="image/*">
-                        <img src="https://placehold.co/150x150" alt="사진 미리보기" class="preview-image d-none">
-                        <input type="hidden" class="stepImageUrl">
-                        <input type="hidden" class="stepImageId">
-                    </label>
-                </div>
-            </div>`;
-            $('#step-container').append(newStep);
-        });
-    });
-</script>
 <div th:replace="~{layout/footer :: footer}">Footer</div>
+<script src="/js/post-common.js"></script>
+<script src="/js/post-write.js"></script>
+
 </body>
 </html>

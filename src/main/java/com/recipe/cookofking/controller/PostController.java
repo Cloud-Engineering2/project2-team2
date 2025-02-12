@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,15 +44,20 @@ public class PostController {
 
         boolean isPostOwner = false;
 
+        boolean hasLiked = false;
         if (principalDetails != null) {
             String currentUsername = principalDetails.getUsername();
+            Integer userId = principalDetails.getUser().getId();
+
             if (postViewDto.getUsername() != null && postViewDto.getUsername().equals(currentUsername)) {
                 isPostOwner = true;
             }
+
+            // 좋아요 여부 확인
+            hasLiked = postService.hasUserLikedPost(postid, userId);
         }
-
         model.addAttribute("isPostOwner", isPostOwner);  // 작성자 여부 추가
-
+        model.addAttribute("hasLiked", hasLiked);  // 좋아요 여부 추가
         return "post/post-view";  // post-view.html 렌더링
     }
 

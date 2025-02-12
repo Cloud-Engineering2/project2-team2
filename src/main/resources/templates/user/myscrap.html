@@ -20,24 +20,24 @@
                     <div class="row align-items-center mb-4">
                         <!-- 좌측: 레시피 수 표시 -->
                         <div class="col-md-6">
-                            <h5 class="mb-0">총 <strong th:text="${#numbers.formatInteger(totalPosts, 0, 'COMMA')}">0</strong>개의 맛있는 레시피가 있습니다.</h5>
+                            <h5 class="mb-0">총 <strong th:text="${#numbers.formatInteger(totalPosts, 0, 'COMMA')}">0</strong>개의 스크랩 한 레시피가 있습니다.</h5>
                         </div>
 
                         <!-- 우측: 정렬 버튼 -->
                         <div class="col-md-6 text-md-right sort-buttons">
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'latest'} ? 'active'"
-                                    th:onclick="'location.href=\'/post/list?sort=latest\''">
+                                    th:onclick="'location.href=\'/user/myscrap?sort=latest\''">
                                 최신순
                             </button>
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'views'} ? 'active'"
-                                    th:onclick="'location.href=\'/post/list?sort=views\''">
+                                    th:onclick="'location.href=\'/user/myscrap?sort=views\''">
                                 조회순
                             </button>
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'likes'} ? 'active'"
-                                    th:onclick="'location.href=\'/post/list?sort=likes\''">
+                                    th:onclick="'location.href=\'/user/myscrap?sort=likes\''">
                                 좋아요순
                             </button>
                         </div>
