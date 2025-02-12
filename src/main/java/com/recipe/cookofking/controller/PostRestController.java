@@ -1,8 +1,6 @@
 package com.recipe.cookofking.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.recipe.cookofking.config.auth.PrincipalDetails;
 import com.recipe.cookofking.dto.UserDto;
 import com.recipe.cookofking.dto.image.ImageValidationDto;
 import com.recipe.cookofking.dto.post.RecipeSubmissionDto;
@@ -11,8 +9,8 @@ import com.recipe.cookofking.service.PostService;
 import com.recipe.cookofking.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -30,14 +28,12 @@ public class PostRestController {
     private final UserService userService;
 
     // 레시피 저장 API
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/submit-recipe")
-    public ResponseEntity<Map<String, Object>> submitRecipe(@RequestBody RecipeSubmissionDto submissionDto) {
-        // JWT 토큰에서 username 추출
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();  // 인증된 사용자 이름
+    public ResponseEntity<Map<String, Object>> submitRecipe(@RequestBody RecipeSubmissionDto submissionDto,
+                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        // UserService에서 UserDto 조회
-        UserDto userDto = userService.findUserByUsername(username);
+        UserDto userDto = userService.findUserByUsername(principalDetails.getUsername());  // 수정된 부분
         submissionDto.getRecipeData().setUser(userDto);
 
         // 이미지 검증 및 영구 저장 처리
@@ -58,18 +54,12 @@ public class PostRestController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("isAuthenticated()")  // 추가된 부분
     @PostMapping("/update-recipe")
-    public ResponseEntity<Map<String, Object>> updateRecipe(@RequestBody RecipeSubmissionDto submissionDto) {
-        // JWT 토큰에서 사용자 정보 추출
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();  // 인증된 사용자 이름
+    public ResponseEntity<Map<String, Object>> updateRecipe(@RequestBody RecipeSubmissionDto submissionDto,
+                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-//        String token = authorizationHeader.replace("Bearer ", "");
-//        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
-//        String username = decodedJWT.getClaim("uid").asString();
-
-        // 사용자 정보 조회
-        UserDto userDto = userService.findUserByUsername(username);
+        UserDto userDto = userService.findUserByUsername(principalDetails.getUsername());
         submissionDto.getRecipeData().setUser(userDto);
 
         // 게시글 ID 확인
@@ -108,6 +98,33 @@ public class PostRestController {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "레시피가 성공적으로 수정되었습니다!");
         response.put("postId", updatedPostId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 레시피 삭제 API
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/delete-recipe/{postId}")
+    public ResponseEntity<Map<String, Object>> deleteRecipe(@PathVariable Integer postId,
+                                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        UserDto userDto = userService.findUserByUsername(principalDetails.getUsername());
+
+        // 게시글 소유자 검증
+        if (!postService.isUserOwnerOfPost(postId, userDto.getId())) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "해당 게시글에 대한 삭제 권한이 없습니다.");
+            return ResponseEntity.status(403).body(errorResponse);
+        }
+
+        // 이미지 임시 처리
+        imagemappingService.markImagesAsTemporaryByPostId(postId);
+
+        // 게시글 삭제
+        postService.deletePost(postId);
+
+        // 성공 응답 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "레시피가 성공적으로 삭제되었습니다!");
 
         return ResponseEntity.ok(response);
     }

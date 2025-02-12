@@ -18,4 +18,7 @@ public interface ImagemappingRepository extends JpaRepository<Imagemapping, Inte
 
     @Query("SELECT a FROM Imagemapping a WHERE a.createdDate < :thresholdDate and a.isTemp=true")
     List<Imagemapping> findStaleImages(@Param("thresholdDate") LocalDateTime thresholdDate);
+
+    List<Imagemapping> findByPost_Id(Integer postId);  // Post 객체 대신 postId로 검색
+
 }

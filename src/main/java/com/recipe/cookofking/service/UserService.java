@@ -78,6 +78,20 @@ public class UserService {
         return UserDto.fromEntity(user);
     }	
 	
+	// 이메일 업데이트 메서드, DTO를 사용하여 이메일 수정
+	public void updateUserEmail(UserDto userDto) {
+        // username으로 사용자 정보 조회
+        User existingUser = userRepository.findByUsername(userDto.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // UserDto를 사용하여 엔티티 수정
+        User updatedUser = userDto.toUpdatedEntity(existingUser);
+
+        // 수정된 사용자 정보 저장
+        userRepository.save(updatedUser);
+    }
+	
+	
 	public User findByUsername(String username) {
 		return userRepository.findByUsername(username)
 				.orElseThrow(()-> new UsernameNotFoundException("user"));

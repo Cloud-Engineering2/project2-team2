@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 <meta charset="utf-8">
@@ -30,8 +29,6 @@
 		<div class="mt-2" th:if="${errorMessage}" style="color: red;">
 			<p th:text="${errorMessage}"></p>
 		</div>
-
-
 
 
 		<form th:action="@{/user/register}" method="post">
