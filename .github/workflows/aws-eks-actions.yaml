@@ -11,6 +11,7 @@ on:
       - 'manifest/**' # 특정 디렉토리 무시
 
 
+
 jobs:
   ci:
     environment: aws-eks-test
