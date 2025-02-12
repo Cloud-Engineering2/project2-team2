@@ -27,17 +27,17 @@
                         <div class="col-md-6 text-md-right sort-buttons">
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'latest'} ? 'active'"
-                                    th:onclick="'location.href=\'/user/myrecipe?sort=latest\''">
+                                    th:onclick="'location.href=\'/user/myscrap?sort=latest\''">
                                 최신순
                             </button>
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'views'} ? 'active'"
-                                    th:onclick="'location.href=\'/user/myrecipe?sort=views\''">
+                                    th:onclick="'location.href=\'/user/myscrap?sort=views\''">
                                 조회순
                             </button>
                             <button class="btn btn-outline-secondary"
                                     th:classappend="${currentSort == 'likes'} ? 'active'"
-                                    th:onclick="'location.href=\'/user/myrecipe?sort=likes\''">
+                                    th:onclick="'location.href=\'/user/myscrap?sort=likes\''">
                                 좋아요순
                             </button>
                         </div>
