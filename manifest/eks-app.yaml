@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: t2-project2-pod
-          image: 727646470302.dkr.ecr.ap-northeast-2.amazonaws.com/t2-yeeryong:a95e2ac22d9bf0536c5d508bf0dfc8618136d483
+          image: 727646470302.dkr.ecr.ap-northeast-2.amazonaws.com/t2-yeeryong:bafbd117958f5ceecccc155633f0afd3f598a434
 
 ---
 
