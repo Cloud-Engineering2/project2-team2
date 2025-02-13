@@ -109,6 +109,8 @@ public class PostRestController {
                                                             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         UserDto userDto = userService.findUserByUsername(principalDetails.getUsername());
 
+        //전체적으로 리팩토링 할 필요가 있음 서비스단으로 이동해야함 (트랜잭션 이슈)
+
         // 게시글 소유자 검증
         if (!postService.isUserOwnerOfPost(postId, userDto.getId())) {
             Map<String, Object> errorResponse = new HashMap<>();
