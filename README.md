@@ -17,11 +17,10 @@
 ## 🛠 기술 스택
 
 ### Back-end
-- **Spring Boot 3.4.2**
-- **Spring Security & OAuth2**
+- **Spring Boot 3.1.2**
+- **Spring Security **
 - **Spring Data JPA**
 - **MySQL (AWS RDS)**
-- **Redis (세션 클러스터링)**
 
 ### Front-end
 - **Thymeleaf**
@@ -121,7 +120,7 @@
 
 ### 3️⃣ 세션 유지 문제
 **원인:** Pod 분산으로 인한 세션 공유 문제
-**해결:** ALB Stickiness 설정 및 Redis 기반 세션 클러스터링
+**해결:** ALB Stickiness 설정 또는 Redis 기반 세션 클러스터링
 
 ## 📜 라이선스
 
