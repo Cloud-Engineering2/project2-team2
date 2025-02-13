@@ -15,7 +15,9 @@ spec:
       containers:
         - name: t2-project2-pod
           image: 727646470302.dkr.ecr.ap-northeast-2.amazonaws.com/t2-yeeryong:74e6977f14c88de6f6df760c60a0fe2f7c6cb1e0
-
+	  env:
+            - name: TZ
+              value: "Asia/Seoul"
 ---
 
 # spring-boot-service-01.yaml
