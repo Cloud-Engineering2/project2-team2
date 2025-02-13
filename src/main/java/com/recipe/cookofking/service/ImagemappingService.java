@@ -30,6 +30,9 @@ public class ImagemappingService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    @Value("${cloud.aws.cloudfront.domain}")
+    private String cloudFrontDomain;
+
 
     @Transactional
     public ImagemappingDto uploadImage(MultipartFile file) throws IOException {
@@ -47,7 +50,8 @@ public class ImagemappingService {
 
         // 업로드된 파일의 S3 URL 생성
         String region = s3Client.serviceClientConfiguration().region().id();
-        String s3Url = "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
+//        String s3Url = "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
+        String s3Url = cloudFrontDomain + fileName;
 
         // DB에 이미지 정보 저장
         Imagemapping imagemapping = Imagemapping.builder()

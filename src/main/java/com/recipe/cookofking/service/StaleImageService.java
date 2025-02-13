@@ -27,6 +27,9 @@ public class StaleImageService {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    @Value("${cloud.aws.cloudfront.domain}")
+    private String cloudFrontDomainPrefix;
+
     /**
      * 매일 오전 03시
      * 해당 시각으로부터 24시간 이전에 등록되었으며
@@ -50,12 +53,12 @@ public class StaleImageService {
             return;
         }
 
-        String prefix = "https://" + s3BucketName + ".s3." + region + ".amazonaws.com/";
+//        String prefix = "https://" + s3BucketName + ".s3." + region + ".amazonaws.com/";
 
         for (Imagemapping image : staleImages) {
             try {
                 // 2. S3에서 파일 삭제
-                String s3Key = image.getS3Url().replace(prefix, ""); // 예: "folder/example.png"
+                String s3Key = image.getS3Url().replace(cloudFrontDomainPrefix, ""); // 예: "folder/example.png"
 
                 DeleteObjectRequest request = DeleteObjectRequest.builder()
                         .bucket(s3BucketName)
