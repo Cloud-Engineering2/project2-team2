@@ -191,7 +191,7 @@ public class UserController {
 		PageRequest pageRequest = PageRequest.of(adjustedPage, size, sortOrder);
 
 		// 스크랩한 게시글 조회
-		Page<PostDto> postPage = postService.getMyScrapList(pageRequest, userId);
+		Page<PostDto> postPage = postService.getMyLikedPosts(pageRequest, userId, sort);
 
 		// 모델에 데이터 추가
 		model.addAttribute("postPage", postPage);
