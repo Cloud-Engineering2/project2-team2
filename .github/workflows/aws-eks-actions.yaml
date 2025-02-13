@@ -2,13 +2,14 @@ name: CI Test for AWS EKS
 on:
   push:
     branches:
-      - feature-aws-test
-    #    braches와 함께 사용 불가능 / 특정 브랜치 무시
-    #    branches-ignore:
-    #      - main
-    #      - develop
+      - main
     paths-ignore:
       - 'manifest/**' # 특정 디렉토리 무시
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed  # PR이 병합될 때 실행
 
 jobs:
   ci:
@@ -67,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
-          ref: ${{ github.ref_name }}
+          ref: cd-manifest
           token: ${{ secrets.T2_YEERYONG_GITHUB_TOKEN }}
 
       - name: Update Image with New SHA
