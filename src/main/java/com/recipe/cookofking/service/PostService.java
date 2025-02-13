@@ -145,6 +145,10 @@ public class PostService {
     public void deletePost(Integer postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("해당 게시글을 찾을 수 없습니다."));
+
+        likeRepository.deleteByPostId(postId);
+
+
         postRepository.delete(post);
     }
 

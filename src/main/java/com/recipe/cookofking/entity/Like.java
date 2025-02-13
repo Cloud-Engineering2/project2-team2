@@ -24,7 +24,6 @@ public class Like {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)  // DB에서 CASCADE DELETE 적용
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
