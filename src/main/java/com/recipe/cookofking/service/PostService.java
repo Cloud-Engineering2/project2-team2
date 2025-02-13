@@ -1,6 +1,7 @@
 package com.recipe.cookofking.service;
 import com.recipe.cookofking.dto.post.PostDto;
 import com.recipe.cookofking.dto.post.PostViewDto;
+import com.recipe.cookofking.entity.Like;
 import com.recipe.cookofking.entity.Post;
 import com.recipe.cookofking.entity.User;
 import com.recipe.cookofking.mapper.PostMapper;
@@ -9,7 +10,9 @@ import com.recipe.cookofking.repository.PostRepository;
 import com.recipe.cookofking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,9 +116,29 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostDto> getMyScrapList(Pageable pageable, Integer userId) {
-        return likeRepository.findPostsByUserId(userId, pageable)
-                .map(PostMapper::toDto);
+    public Page<PostDto> getMyLikedPosts(Pageable pageable, Integer userId, String sortType) {
+        // 정렬 기준 설정
+        Sort sort;
+        switch (sortType) {
+            case "likes":
+                sort = Sort.by(Sort.Direction.DESC, "post.likeCount");  // 좋아요 개수 기준 정렬
+                break;
+            case "views":
+                sort = Sort.by(Sort.Direction.DESC, "post.viewCount");  // 조회수 기준 정렬
+                break;
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "post.createdDate"); // 기본값: 최신순 정렬
+                break;
+        }
+
+        // 새로운 Pageable 객체 생성 (페이징 + 정렬)
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        // 사용자가 좋아요한 게시글 가져오기
+        Page<Like> likesPage = likeRepository.findByUserId(userId, sortedPageable);
+
+        // Like 엔티티에서 Post 엔티티로 변환하여 반환
+        return likesPage.map(like -> PostMapper.toDto(like.getPost()));
     }
 
     @Transactional

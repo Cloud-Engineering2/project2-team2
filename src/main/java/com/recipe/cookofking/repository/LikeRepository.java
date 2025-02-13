@@ -17,9 +17,10 @@ import org.springframework.stereotype.Repository;
 public interface LikeRepository extends JpaRepository<Like, Integer> {
     Optional<Like> findByPostIdAndUserId(Integer postId, Integer userId);
     Optional<Like> findByPostAndUser(Post post, User user); // 특정 게시글에 대한 좋아요 여부 확인
+    Page<Like> findByUserId(Integer userId, Pageable pageable);
 
-    @Query("SELECT l.post FROM Like l WHERE l.user.id = :userId")
-    Page<Post> findPostsByUserId(@Param("userId") Integer userId, Pageable pageable);
+
+
 
     int countByPost(Post post); // ✅ 좋아요 개수 조회
 }
