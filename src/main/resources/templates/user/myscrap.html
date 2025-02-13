@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 상세 보기</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="/css/common.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{layout/header :: header}">Header</div>
+<div class="container mt-3 mb-1 posts">
+    <div class="row justify-content-center">
+        <!-- 제목 및 소개 카드 -->
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-1">
+                <div class="card-body">
+                    <!-- 상단 레시피 수와 정렬 버튼 추가 -->
+                    <div class="row align-items-center mb-4">
+                        <!-- 좌측: 레시피 수 표시 -->
+                        <div class="col-md-6">
+                            <h5 class="mb-0">총 <strong th:text="${#numbers.formatInteger(totalPosts, 0, 'COMMA')}">0</strong>개의 스크랩 한 레시피가 있습니다.</h5>
+                        </div>
+
+                        <!-- 우측: 정렬 버튼 -->
+                        <div class="col-md-6 text-md-right sort-buttons">
+                            <button class="btn btn-outline-secondary"
+                                    th:classappend="${currentSort == 'latest'} ? 'active'"
+                                    th:onclick="'location.href=\'/user/myscrap?sort=latest\''">
+                                최신순
+                            </button>
+                            <button class="btn btn-outline-secondary"
+                                    th:classappend="${currentSort == 'views'} ? 'active'"
+                                    th:onclick="'location.href=\'/user/myscrap?sort=views\''">
+                                조회순
+                            </button>
+                            <button class="btn btn-outline-secondary"
+                                    th:classappend="${currentSort == 'likes'} ? 'active'"
+                                    th:onclick="'location.href=\'/user/myscrap?sort=likes\''">
+                                좋아요순
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap">
+                        <div class="custom-col" th:each="post : ${postPage.content}">
+
+                            <!-- 개별 포스트 카드 (4개씩 배치) -->
+                            <div class="card shadow-sm h-100" style="cursor: pointer;"
+                                 th:onclick="'location.href=\'/post/view/' + ${post.id} + '\''">
+
+                                <!-- 포스트 이미지 -->
+                                <div class="image-container">
+                                    <img th:src="${post.mainImageS3URL}" alt="레시피 이미지" class="cropped-image">
+                                </div>
+
+                                <!-- 포스트 본문 -->
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${post.title}">레시피 제목</h5>
+                                    <p class="card-text text-muted" th:text="${#strings.abbreviate(post.content, 50)}">내용 요약</p>
+
+                                    <!-- 작성자 및 조회수 -->
+                                    <div class="d-flex justify-content-between text-muted info-section">
+                                        <span title="작성자" th:text="${post.user != null ? post.user.username : '탈퇴한 회원'}">홍길동</span>
+                                        <span title="좋아요">❤️ <span th:text="${post.likeCount}">0</span></span>
+                                        <span title="조회수">👁️ <span th:text="${post.viewCount}">0</span></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 페이지네이션 (카드 안으로 이동) -->
+                    <!-- 페이지네이션 (카드 안으로 이동) -->
+                    <nav aria-label="Page navigation" th:if="${postPage.totalElements > 0}">
+                        <ul class="pagination justify-content-center">
+                            <!-- 이전 페이지 버튼 -->
+                            <li class="page-item" th:if="${!postPage.first}">
+                                <a class="page-link"
+                                   th:href="@{'/post/list?page=' + ${postPage.number - 1} + '&sort=' + ${currentSort}}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            <!-- 페이지 번호 버튼 -->
+                            <li class="page-item"
+                                th:each="pageNum : ${#numbers.sequence(
+                                    ((postPage.totalPages > 10) ?
+                                        (postPage.number <= 5 ? 0 :
+                                         (postPage.number + 4 >= postPage.totalPages ? postPage.totalPages - 10 : postPage.number - 5))
+                                        : 0),
+                                    ((postPage.totalPages > 10) ?
+                                        (postPage.number <= 5 ? 9 :
+                                         (postPage.number + 4 >= postPage.totalPages ? postPage.totalPages - 1 : postPage.number + 4))
+                                        : postPage.totalPages - 1)
+                                )}"
+                                th:classappend="${postPage.number == pageNum} ? 'active'">
+                                <a class="page-link"
+                                   th:href="@{'/post/list?page=' + ${pageNum + 1} + '&sort=' + ${currentSort}}"
+                                   th:text="${pageNum + 1}">
+                                </a>
+                            </li>
+
+                            <!-- 다음 페이지 버튼 -->
+                            <li class="page-item" th:if="${!postPage.last}">
+                                <a class="page-link"
+                                   th:href="@{'/post/list?page=' + ${postPage.number + 1} + '&sort=' + ${currentSort}}"
+                                   aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{layout/footer :: footer}">Footer</div>
+</body>
+</html>

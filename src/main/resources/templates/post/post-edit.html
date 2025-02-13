@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 등록</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="/css/common.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{layout/header :: header}">Header</div>
+<!-- 전체 레이아웃을 감싸는 컨테이너 -->
+<div class="container mt-3 mb-1 post-write">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+
+            <!-- 카드 스타일로 폼 감싸기 -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-left mb-4">레시피 등록</h4>
+
+                    <form id="recipeForm">
+                        <input type="hidden" th:if="${post != null}" name="id" th:value="${post.id}">
+                        <!-- 레시피 제목 -->
+                        <div class="form-group mb-4">
+                            <label for="recipeTitle">레시피 제목</label>
+                            <input th:value="${post?.title}"
+                                   type="text" class="form-control" id="recipeTitle" placeholder="예) 소고기 미역국 끓이기">
+                        </div>
+
+                        <!-- 요리소개와 이미지 등록 -->
+                        <div class="form-group mb-4">
+                            <label for="recipeDescription">요리소개</label>
+                            <div class="image-upload">
+                                <textarea th:text="${post?.content}"
+                                          class="form-control" id="recipeDescription" rows="3"
+                                          placeholder="이 레시피의 탄생배경을 적어주세요. 예) 남편의 생일을 맞아 소고기 미역국을 끓였어요. 어머니로부터 배운 미역국 레시피를 남편의 입맛에 맞게 고안했습니다.">
+
+                                </textarea>
+                                <label class="upload-btn">
+                                    <input type="file" class="recipe-image" accept="image/*">
+                                    <img th:if="${post != null}" id="imagePreview" th:src="${post?.mainImageS3URL}" alt="사진 미리보기"
+                                         class="preview-image">
+                                    <input th:value="${post?.mainImageS3URL}" type="hidden" id="mainImageUrl">
+                                    <input th:value="${post?.mainImageS3URL}" type="hidden" id="originalMainImageUrl">
+                                    <input type="hidden" id="mainImageId">
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- 재료 정보 -->
+                        <h4 class="mb-3">재료 정보</h4>
+                        <p class="text-muted">재료가 남거나 부족하지 않도록 정확한 계량정보를 적어주세요.</p>
+                        <div th:if="${post != null}" id="ingredients-json" th:utext="${post.ingredients}" style="display:none;"></div>
+                        <div id="ingredient-container">
+                            <div class="form-row ingredient-row mb-2">
+                                <div class="col">
+                                    <input type="text" class="form-control ingredient-name" placeholder="예) 돼지고기">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control ingredient-quantity" placeholder="10 (수량)">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control ingredient-unit" placeholder="예) g, ml (단위)">
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-danger remove-btn">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="add-ingredient" class="btn btn-success btn-block mb-4">+ 재료 추가</button>
+
+                        <hr class="my-4">
+
+                        <!-- 요리 순서 -->
+                        <h4 class="mb-3">요리 순서</h4>
+                        <p class="text-muted small">
+                            요리의 맛이 좌우될 수 있는 중요한 부분은 빠짐없이 적어주세요.<br>
+                            예) 10분간 약한불로 익혀주세요. 마늘편은 충분히 익혀 매운 맛을 제거하세요.
+                        </p>
+                        <div th:if="${post != null}" id="instructions-json" th:utext="${post.instructions}"
+                             style="display:none;"></div>
+                        <div id="step-container">
+
+                        </div>
+
+                        <button type="button" id="add-step" class="btn btn-success btn-block mb-4">+ 순서 추가</button>
+                        <button type="submit" class="btn btn-primary btn-block">저장</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div th:replace="~{layout/footer :: footer}">Footer</div>
+<script src="/js/post-common.js"></script>
+<script src="/js/post-edit.js"></script>
+
+</body>
+</html>
