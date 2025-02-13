@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: t2-project2-pod
-          image: 727646470302.dkr.ecr.ap-northeast-2.amazonaws.com/t2-yeeryong:54a0169c40b376efe5232127ff43c3ab9139321a
+          image: 727646470302.dkr.ecr.ap-northeast-2.amazonaws.com/t2-yeeryong:737e27b470e32c5bab223029c04801c2645b262c
           env:
                 - name: TZ
                   value: "Asia/Seoul"
