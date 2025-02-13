@@ -28,10 +28,14 @@ spec:
     app.kubernetes.io/name: t2-project2
   type: ClusterIP
   ports:
-    - protocol: TCP
+    - name: spring-boot
+      protocol: TCP
       port: 8080
       targetPort: 8080
-      name: tcp-8080
+    - name: prometheus
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -46,7 +50,7 @@ metadata:
     alb.ingress.kubernetes.io/load-balancer-name: t2-eks-app-alb
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/success-codes: "200-399"
-    alb.ingress.kubernetes.io/healthcheck-path: "/user/login"
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
 
     # ALB 그룹 설정
     alb.ingress.kubernetes.io/group.name: "project2"
@@ -68,3 +72,10 @@ spec:
                 name: t2-project2
                 port:
                   number: 8080
+          - path: /management
+            pathType: Prefix
+            backend:
+              service:
+                name: t2-project2
+                port:
+                  number: 9090
